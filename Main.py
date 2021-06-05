@@ -9,16 +9,7 @@ def graph_test():
     g.initialize_nodes_hashmap()
     g.initialize_edges_hashmap()
 
-    # Test Edge Map
-    for i in g.location_names:
-        for j in g.location_names:
-            if i != j:
-                # name[1] = Address Name, Ex: "Western Governors University"
-                print(g.adjacency_list.get(f"{i[1]}:{j[1]}"))
-
-    # Test Node Map
-    for i in g.location_names:
-        print(g.node_list.get(f"{i[1]}"))
+    g.print()
 
 
 def package_handler_test():

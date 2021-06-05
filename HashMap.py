@@ -68,3 +68,11 @@ class HashMap:
                 self.map[hash].pop(i)
                 self.length -= 1
                 return True
+
+    def print(self, key):
+        # Calculate the hash value for the key(/value pair) to delete
+        hash = self.calculate_hash_index(key)
+        for i in range(0, len(self.map[hash])):
+            # Pop the entry whos key matches the target key
+            if self.map[hash][i][0] == key:
+                print(self.map[hash][0][1])

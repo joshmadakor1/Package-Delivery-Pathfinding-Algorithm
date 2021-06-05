@@ -7,13 +7,13 @@ class Graph:
     # Default Constructor
     def __init__(self):
         self.location_names = [None] * 27
-        self.distance_map = HashMap()
+        self.raw_distance_data = []
         self.node_list = HashMap()
         self.adjacency_list = HashMap()
-        self.raw_distance_data = []
 
     # Populates the location name data
     # O(N); where N = number of rows of location name data
+
     def initialize_location_name_data(self):
 
         with open("./data/distance_names.csv") as file:
@@ -32,42 +32,15 @@ class Graph:
             reader = csv.reader(file)
             self.raw_distance_data = list(reader)
 
-    # Populates the hashmap with distance data for each address
-    def populate_hashmap_with_distance_data_for_each_adress(self):
-        for i in range(len(self.raw_distance_data)):
-            list = []
-            for j in range(len(self.raw_distance_data)):
-
-                # Add distance entries horizontally
-                if j < i:
-                    list.append([self.location_names[j][1],
-                                self.raw_distance_data[i][j]])
-                # Add distance entries vertically, to account for 2 way mapping
-                elif j > i:
-                    list.append([self.location_names[j][1],
-                                self.raw_distance_data[j][i]])
-
-            # Create an entry in the hash map for for all the distances to that address
-            self.distance_map.add(self.location_names[i][1], list)
-
-   # O(1)
-    def add_node(self, name, address):
-        print(address)
-        return
-
+    # Builds the hashmap which contains all the nodes (Addresses)
     # O(V); where V = number of verticies
     def initialize_nodes_hashmap(self):
         for name in self.location_names:
             # name[1] -> Ex. "Western Governors University"
             # name[2] -> Ex. "4001 South 700 East"
-            self.node_list.add(name[1], self.Node(name[1], name[2]))
+            self.add_node(name[1], self.Node(name[1], name[2]))
 
-    # O(1)
-    def add_edge(self, from_node, to_node, weight):
-        # print(f"{from_node}, {to_node}, {weight}")
-        self.adjacency_list.add(
-            f"{from_node}:{to_node}", self.Edge(from_node, to_node, weight))
-
+    # Builds the hashmap which contains all the edges
     # O(V^2); where V = number of verticies
     def initialize_edges_hashmap(self):
         for i in range(len(self.raw_distance_data)):
@@ -82,6 +55,32 @@ class Graph:
                     self.add_edge(
                         from_node=self.location_names[i][1], to_node=self.location_names[j][1], weight=self.raw_distance_data[j][i])
                     # list.append([self.location_names[j][1], self.raw_distance_data[j][i]])
+
+   # O(1)
+    def add_node(self, name, address):
+        self.node_list.add(name, self.Node(name, address))
+
+    # O(1)
+    def add_edge(self, from_node, to_node, weight):
+        edge = self.adjacency_list.get(from_node)
+        if edge != None:
+            edge.append(
+                self.Edge(from_node, to_node, weight))
+            self.adjacency_list.add(from_node, edge)
+            # print(self.adjacency_list.get(from_node)[0].from_node)
+            # p rint(self.adjacency_list.get(from_node)[0])
+            # self.adjacency_list.print(from_node)
+
+        else:
+            self.adjacency_list.add(
+                from_node, [self.Edge(from_node, to_node, weight)])
+            # self.adjacency_list.print(from_node)
+
+    def print(self):
+        for vertex in self.location_names:
+            # vertex[1] -> Ex. "Western Governors University"
+            for butthole in self.adjacency_list.get(vertex[1]):
+                print(butthole)
 
     class Node():
         def __init__(self, name, address):

@@ -7,9 +7,9 @@ def graph_test():
     g.initialize_location_name_data()
     g.initialize_location_distance_data()
     g.initialize_nodes_hashmap()
-    g.initialize_edges_hashmap()
+    # g.initialize_edges_hashmap()
 
-    g.print_adjacency_list()
+    g.print_nodes()
 
 
 def package_handler_test():

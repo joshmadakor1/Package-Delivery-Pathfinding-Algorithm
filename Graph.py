@@ -1,5 +1,7 @@
 import csv
 from HashMap import HashMap
+from Node import Node
+from Edge import Edge
 
 
 class Graph:
@@ -9,7 +11,7 @@ class Graph:
         self.location_names = [None] * 27
         self.raw_distance_data = []
         self.node_list = HashMap()
-        self.adjacency_list = HashMap()
+        #self.adjacency_list = HashMap()
 
     # Populates the location name data
     # O(N); where N = number of rows of location name data
@@ -34,72 +36,56 @@ class Graph:
 
     # Builds the hashmap which contains all the nodes (Addresses)
     # O(V); where V = number of verticies
-    def initialize_nodes_hashmap(self):
-        for name in self.location_names:
-            # name[1] -> Ex. "Western Governors University"
-            # name[2] -> Ex. "4001 South 700 East"
-            self.add_node(name[1], self.Node(name[1], name[2]))
+    # def initialize_nodes_hashmap(self):
+    #    for name in self.location_names:
+    #        # name[1] -> Ex. "Western Governors University"
+    #        # name[2] -> Ex. "4001 South 700 East"
+    #        self.add_node(name[1], Node(name[1], name[2]))
 
     # Builds the hashmap which contains all the edges
     # O(V^2); where V = number of verticies
-    def initialize_edges_hashmap(self):
+    def initialize_nodes_hashmap(self):
         for i in range(len(self.raw_distance_data)):
             for j in range(len(self.raw_distance_data)):
 
                 # Add distance entries horizontally
                 if j < i:
-                    self.add_edge(
+                    self.add_node(
                         from_node=self.location_names[i][1], to_node=self.location_names[j][1], weight=self.raw_distance_data[i][j])
                 # Add distance entries vertically, to account for 2 way mapping
                 elif j > i:
-                    self.add_edge(
+                    self.add_node(
                         from_node=self.location_names[i][1], to_node=self.location_names[j][1], weight=self.raw_distance_data[j][i])
                     # list.append([self.location_names[j][1], self.raw_distance_data[j][i]])
 
-   # O(1)
-    def add_node(self, name, address):
-        self.node_list.add(name, self.Node(name, address))
+    # O(1)
+    # def add_node(self, name, address):
+    #    self.node_list.add(name, Node(name, address))
 
     # O(1)
-    def add_edge(self, from_node, to_node, weight):
-        edge = self.adjacency_list.get(from_node)
+    def add_node(self, from_node, to_node, weight):
+
+        edge = self.node_list.get(from_node)
         if edge != None:
             edge.append(
-                self.Edge(from_node, to_node, weight))
-            self.adjacency_list.add(from_node, edge)
-            # print(self.adjacency_list.get(from_node)[0].from_node)
-            # p rint(self.adjacency_list.get(from_node)[0])
-            # self.adjacency_list.print(from_node)
-
+                Edge(from_node, to_node, weight))
+            self.node_list.add(from_node, edge)
         else:
-            self.adjacency_list.add(
-                from_node, [self.Edge(from_node, to_node, weight)])
-            # self.adjacency_list.print(from_node)
+            self.node_list.add(
+                from_node, [Edge(from_node, to_node, weight)])
 
     # O((V-1)^2); where V = number of verticies
-    def print_adjacency_list(self):
+    def print_nodes(self):
         for from_vertex in self.location_names:
             connected_verticies = []
             # vertex[1] -> Ex. "Western Governors University"
-            for edge in self.adjacency_list.get(from_vertex[1]):
-                connected_verticies.append(
-                    f"{edge.from_node}->{edge.to_node}")
-            print(f"{edge.from_node} is connected to {connected_verticies}")
+            for node in self.node_list.get(from_vertex[1]):
+                connected_verticies.append(f"{node.from_node}->{node.to_node}")
+            print(f"{node.from_node} is connected to {connected_verticies}")
 
-    class Node():
-        def __init__(self, name, address):
-            self.name = name
-            self.address = address
-
-        def __str__(self):
-            return f"{self.name}"
-
-    class Edge():
-        def __init__(self, from_node, to_node, weight):
-            self.from_node = from_node
-            self.to_node = to_node
-            self.weight = weight
-
-        def __str__(self):
-            #  -> {self.weight}
-            return f"{self.from_node} -> {self.to_node}"
+    # def print_nodes(self):
+    #    for vertex in self.location_names:
+    #        # vertex[1] -> Ex. "Western Governors University"
+    #        # edge.from_node, to_node, weight
+    #        edge = self.node_list.get(vertex[1])
+    #        print(f"{vertex[1]}->{edge}")

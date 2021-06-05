@@ -1,7 +1,7 @@
 import csv
 from HashMap import HashMap
-from Node import Node
 from Edge import Edge
+from Node import Node
 
 
 class Graph:
@@ -11,7 +11,6 @@ class Graph:
         self.location_names = [None] * 27
         self.raw_distance_data = []
         self.node_list = HashMap()
-        #self.adjacency_list = HashMap()
 
     # Populates the location name data
     # O(N); where N = number of rows of location name data
@@ -59,33 +58,22 @@ class Graph:
                     # list.append([self.location_names[j][1], self.raw_distance_data[j][i]])
 
     # O(1)
-    # def add_node(self, name, address):
-    #    self.node_list.add(name, Node(name, address))
-
-    # O(1)
     def add_node(self, from_node, to_node, weight):
-
-        edge = self.node_list.get(from_node)
-        if edge != None:
-            edge.append(
+        node = self.node_list.get(from_node)
+        if node != None:
+            node.edges.append(
                 Edge(from_node, to_node, weight))
-            self.node_list.add(from_node, edge)
+            self.node_list.add(from_node, node)
         else:
             self.node_list.add(
-                from_node, [Edge(from_node, to_node, weight)])
+                from_node, Node(from_node, [Edge(from_node, to_node, weight)]))
 
     # O((V-1)^2); where V = number of verticies
     def print_nodes(self):
         for from_vertex in self.location_names:
             connected_verticies = []
             # vertex[1] -> Ex. "Western Governors University"
-            for node in self.node_list.get(from_vertex[1]):
-                connected_verticies.append(f"{node.from_node}->{node.to_node}")
-            print(f"{node.from_node} is connected to {connected_verticies}")
-
-    # def print_nodes(self):
-    #    for vertex in self.location_names:
-    #        # vertex[1] -> Ex. "Western Governors University"
-    #        # edge.from_node, to_node, weight
-    #        edge = self.node_list.get(vertex[1])
-    #        print(f"{vertex[1]}->{edge}")
+            for edge in self.node_list.get(from_vertex[1]).get_neighbors():
+                connected_verticies.append(
+                    f"{edge.from_node}-({edge.weight})->{edge.to_node}")
+            print(f"{edge.from_node} is connected to {connected_verticies}")

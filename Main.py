@@ -9,7 +9,7 @@ def graph_test():
     g.initialize_nodes_hashmap()
     g.initialize_edges_hashmap()
 
-    g.print()
+    g.print_adjacency_list()
 
 
 def package_handler_test():

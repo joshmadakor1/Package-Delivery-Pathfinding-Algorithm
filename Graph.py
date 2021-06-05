@@ -76,11 +76,15 @@ class Graph:
                 from_node, [self.Edge(from_node, to_node, weight)])
             # self.adjacency_list.print(from_node)
 
-    def print(self):
-        for vertex in self.location_names:
+    # O((V-1)^2); where V = number of verticies
+    def print_adjacency_list(self):
+        for from_vertex in self.location_names:
+            connected_verticies = []
             # vertex[1] -> Ex. "Western Governors University"
-            for butthole in self.adjacency_list.get(vertex[1]):
-                print(butthole)
+            for edge in self.adjacency_list.get(from_vertex[1]):
+                connected_verticies.append(
+                    f"{edge.from_node}->{edge.to_node}")
+            print(f"{edge.from_node} is connected to {connected_verticies}")
 
     class Node():
         def __init__(self, name, address):
@@ -88,7 +92,7 @@ class Graph:
             self.address = address
 
         def __str__(self):
-            return f"{self.name} -> {self.address}"
+            return f"{self.name}"
 
     class Edge():
         def __init__(self, from_node, to_node, weight):
@@ -97,4 +101,5 @@ class Graph:
             self.weight = weight
 
         def __str__(self):
-            return f"{self.from_node} -> {self.to_node} -> {self.weight}"
+            #  -> {self.weight}
+            return f"{self.from_node} -> {self.to_node}"

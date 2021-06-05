@@ -1,11 +1,9 @@
-import csv
-
-
 class HashMap:
     # Default Constructor
     def __init__(self):
         self.size = 128
         self.map = [None] * self.size
+        self.length = -1  # -1 Accounts for \ufeff in top row
 
     # Calculates the array index where the item will stored
     def calculate_hash_index(self, input):
@@ -26,6 +24,7 @@ class HashMap:
         # If the key doesn't exist in the map yet, add it
         if self.map[hash] is None:
             self.map[hash] = list([value])
+            self.length += 1
         else:
             for keyValuePair in self.map[hash]:
                 # If the key is the same, overwrite the value
@@ -34,6 +33,7 @@ class HashMap:
                     return True
                 # If the key is not the same, append it to the list
                 self.map[hash].append(value)
+                self.length += 1
                 return True
 
     # Retrieve a Key-Value pair from the HashMap
@@ -66,23 +66,5 @@ class HashMap:
             # Pop the entry whos key matches the target key
             if self.map[hash][i][0] == key:
                 self.map[hash].pop(i)
+                self.length -= 1
                 return True
-
-
-h = HashMap()
-contents = [None]
-with open("data.csv") as file:
-    reader = csv.reader(file)
-    contents = list(reader)
-
-for c in contents:
-    h.add(c[0], c[1])
-    # print(c[1])
-
-non_none = 0
-for item in h.map:
-    if item is not None:
-        # print(len(item))
-        non_none += 1
-
-print(f"Non-empty elements: {non_none}")

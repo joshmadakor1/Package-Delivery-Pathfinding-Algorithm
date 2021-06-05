@@ -4,11 +4,10 @@ from Graph import Graph
 
 def graph_test():
     g = Graph()
-    g.populate_location_name_data()
-    g.populate_location_distance_data()
-    g.initialize_nodes()
-    g.populate_edge_hashmap()
-    # g.populate_hashmap_with_distance_data_for_each_adress()
+    g.initialize_location_name_data()
+    g.initialize_location_distance_data()
+    g.initialize_nodes_hashmap()
+    g.initialize_edges_hashmap()
 
     # Test Edge Map
     for i in g.location_names:

@@ -15,5 +15,5 @@ class Node():
         self.edges.add(target_node, Edge(from_node=self.name,
                        to_node=target_node, weight=weight))
 
-    def get_neighbors(self):
+    def get_edges(self):
         return self.edges

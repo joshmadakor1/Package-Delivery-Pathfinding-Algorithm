@@ -1,5 +1,6 @@
 import csv
 from Package import Package
+from HashMap import HashMap
 
 
 class PackageHandler:
@@ -23,13 +24,24 @@ class PackageHandler:
 
     # O(N)
     def build_packages_table_from_csv(self):
+        location_address_to_names = HashMap()
+
+        with open("./data/distance_names.csv") as file:
+            names_reader = csv.reader(file)
+            raw_distance_names = list(names_reader)
+            for entry in raw_distance_names:
+                # Example
+                # entry[1] -> 'Western Governors University'
+                # entry[2] ->'4001 South 700 East'
+                location_address_to_names.add(entry[2], entry[1])
+
         with open("./data/packages.csv") as file:
             packages_reader = csv.reader(file)
             raw_package_data = list(packages_reader)
 
         for entry in raw_package_data:
             if len(entry) > 1:
-                self.insert(Package(id=entry[0], delivery_address=entry[1], deadline=entry[5],
+                self.insert(Package(id=entry[0], address_name=location_address_to_names.get(entry[1]), delivery_address=entry[1], deadline=entry[5],
                                     delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status=entry[7]))
 
     # O(1)

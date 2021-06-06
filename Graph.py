@@ -1,7 +1,9 @@
 import csv
+import sys
 from HashMap import HashMap
 from Edge import Edge
 from Node import Node
+from queue import Queue
 
 
 class Graph:
@@ -73,7 +75,91 @@ class Graph:
         for from_vertex in self.location_names:
             connected_verticies = []
             # vertex[1] -> Ex. "Western Governors University"
-            for edge in self.node_list.get(from_vertex[1]).get_neighbors():
+            for edge in self.node_list.get(from_vertex[1]).get_edges():
                 connected_verticies.append(
                     f"{edge.from_node}-({edge.weight})->{edge.to_node}")
             print(f"{edge.from_node} is connected to {connected_verticies}")
+
+    def get_shortest_distance_to_all_nodes(self, start, nodes_remaining):
+        current_node = start
+        total_distance = 0
+
+        while (len(nodes_remaining) > 0):
+            edges = self.node_list.get(current_node).edges
+            shortest_distance = sys.maxsize
+
+            for edge in edges:
+                if edge.to_node in nodes_remaining:
+                    if float(edge.weight) < shortest_distance:
+                        shortest_distance = float(edge.weight)
+                        current_node = edge.to_node
+                        #print(f"New shortest distance: {shortest_distance}")
+            nodes_remaining.discard(current_node)
+            print(f"{shortest_distance}")
+            total_distance += shortest_distance
+        return(total_distance)
+
+    #### DEPRECATED ####
+    def get_shortest_path_brute_force(self, current_node, remaining_nodes, total_distance):
+        # remaining_nodes is a set that contains nodes that have not been visited yet
+
+        remaining_nodes.discard(current_node)
+        if (len(remaining_nodes) == 0):
+            print(f"Total Distance: {total_distance}")
+            return
+        edges = self.node_list.get(current_node).edges
+
+        for edge in edges:
+            if edge.to_node in remaining_nodes:
+
+                self.get_shortest_path_brute_force(
+                    edge.to_node, remaining_nodes, total_distance + float(edge.weight))
+
+    #### DEPRECATED ####
+    def breadth_first_iterative(self, current_node):
+        q = Queue()
+        visited = set()
+        q.put(current_node)
+        while(q.qsize() != 0):
+            current_node = q.get()
+            visited.add(current_node)
+            print(current_node)
+            edges = self.node_list.get(current_node).edges
+            for edge in edges:
+                if not edge.to_node in visited:
+                    q.put(edge.to_node)
+
+    #### DEPRECATED ####
+    def traverse_depth_first(self, root):
+        node = self.node_list.get(root)
+        distance = 0
+        neighbor_weight = 0
+        if (node == None):
+            return
+        stack = []
+        visited_nodes = set()
+        stack.append(node.name)
+
+        iterations = 0
+        while(len(stack) != 0):
+            iterations += 1
+            current_node = stack.pop()
+            # print("popping")
+
+            if (current_node in visited_nodes):
+                neighbor_weight = 0.0
+                continue
+            distance += float(neighbor_weight)
+            print(f"Visiting: {current_node}")
+
+            visited_nodes.add(current_node)
+
+            neighbors = self.node_list.get(current_node).edges
+            for neighbor in neighbors:
+                if (not neighbor.to_node in visited_nodes):
+                    stack.append(neighbor.to_node)
+                    neighbor_weight = neighbor.weight
+                    # print("pushing")
+
+        print(f"Iterations: {iterations}")
+        print(f"Distance: {distance}")

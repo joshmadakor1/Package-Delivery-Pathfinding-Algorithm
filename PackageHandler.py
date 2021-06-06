@@ -9,6 +9,7 @@ class PackageHandler:
     # This will build a hashmap containing all the package data
     def __init__(self):
         self.packages = {}
+        self.packages_hash_table = HashMap()
         self.build_packages_table_from_csv()
 
     def __iter__(self):
@@ -43,16 +44,12 @@ class PackageHandler:
             if len(entry) > 1:
                 self.insert(Package(id=entry[0], address_name=location_address_to_names.get(entry[1]), delivery_address=entry[1], deadline=entry[5],
                                     delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status=entry[7]))
+                self.packages_hash_table.add(entry[0], Package(id=entry[0], address_name=location_address_to_names.get(entry[1]), delivery_address=entry[1], deadline=entry[5],
+                                                               delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status=entry[7]))
 
     # O(1)
     def get_package_by_id(self, id):
-        package = self.packages.get(id)
-        if package:
-            # The specified package id exists
-            return self.packages[id]
-        else:
-            # The specified package id does not exist
-            return None
+        return self.packages_hash_table.get(id)
 
     # O(N)
     # Returns a collection of packages

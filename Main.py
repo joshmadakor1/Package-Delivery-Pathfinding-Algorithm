@@ -1,75 +1,7 @@
 from PackageHandler import PackageHandler
 from Graph import Graph
-from queue import PriorityQueue, Queue
 from Truck import Truck
-
-
-def graph_test():
-    g = Graph()
-    g.initialize_location_name_data()
-    g.initialize_location_distance_data()
-    g.initialize_nodes_hashmap()
-    # g.initialize_edges_hashmap()
-
-    # g.print_nodes()
-
-    nodes_remaining = set()
-
-    # Populate Nodes Remaining O(V-1)
-    start = "Western Governors University"
-    for vertex in g.location_names:
-        # vertex[1] -> Ex. "Western Governors University"
-        if (vertex[1] != start):
-            nodes_remaining.add(vertex[1])
-
-    total_distance = g.get_shortest_distance_to_all_nodes(
-        start, nodes_remaining)
-    print(total_distance)
-
-
-def package_handler_test():
-    p = PackageHandler()
-
-    #my_packages = p.get_packages_by_status("Can only be on truck 2")
-    # print(my_packages[0])
-    # print(my_packages[1])
-    # print(my_packages[2])
-    # print(len(my_packages))
-    # print(p.packages)
-    # print(len(p.packages))
-
-    for pack in p.packages:
-        print(p.get_package_by_id(pack))
-    # print(p.get_package_by_id(str(99)))
-    #print(p.get_packages_by_address("4580 S 2300 E"))
-    #print(len(p.get_packages_by_address("4580 S 2300 Ex")))
-
-    #print(p.get_packages_by_city("Salt Lake City"))
-    #print(len(p.get_packages_by_city("Salt Lake City")))
-
-    # for pack in p.get_packages_by_status("Can only be on truck 2"):
-    #    print(pack)
-    #print(len(p.get_packages_by_status("Can only be on truck 2")))
-    #print(p.get_package_by_id("99") == None)
-
-    # print(len(p.packagez))
-    # for pack in p.packagez:
-    #    print(f"{pack} --> {p.packagez[pack]}")
-
-    # print(p.get_package_by_id("10"))
-    # print(p.get_package_by_id("100"))
-    # print(p.get_package_by_id("11"))
-
-
-def priority_queue_test():
-    q = PriorityQueue()
-    q.put((10.6, "Rice Terrace Pavilion Park", "Valley Regional Softball Complex"))
-    q.put((10.7, "Wheeler Historic Farm", "Deker Lake"))
-    q.put((5.2, "Wheeler Historic Farm", "Housing Auth. of Salt Lake County"))
-    print(q.queue[0])
-    print(q.get())
-    print(q.get())
-    print(q.get())
+import datetime
 
 
 # Initialize Graph Components
@@ -81,7 +13,7 @@ g.initialize_nodes_hashmap()
 # Initialize Packages
 p = PackageHandler()
 
-# Initialize Trucks
+# Initialize Trucks with their ids
 truck1 = Truck("1")
 truck2 = Truck("2")
 truck3 = Truck("3")
@@ -121,7 +53,6 @@ truck2.add_package(p.get_package_by_id('24'))
 truck2.add_package(p.get_package_by_id('27'))
 truck2.add_package(p.get_package_by_id('35'))
 truck2.add_package(p.get_package_by_id('39'))
-truck2.add_package(p.get_package_by_id('10'))
 
 
 # "Delayed on flight---will not arrive to depot until 9:05 am"
@@ -131,6 +62,8 @@ truck3.add_package(p.get_package_by_id('28'))
 truck3.add_package(p.get_package_by_id('32'))
 # -- Address will be updated by this time (incorrect address package)
 truck3.add_package(p.get_package_by_id('9'))
+# -- Remaining Packages
+truck3.add_package(p.get_package_by_id('10'))
 truck3.add_package(p.get_package_by_id('4'))
 truck3.add_package(p.get_package_by_id('5'))
 truck3.add_package(p.get_package_by_id('11'))
@@ -139,39 +72,41 @@ truck3.add_package(p.get_package_by_id('23'))
 truck3.add_package(p.get_package_by_id('26'))
 truck3.add_package(p.get_package_by_id('33'))
 
-# print(truck1)
-# print(truck2)
-# print(truck3)
 
-# print(p.get_package_by_id('9'))
-#p.get_package_by_id('9').update("410 S State St.", "Third District Juvenile Court", "Salt Lake City", "84111", "")
-# print(p.get_package_by_id('9'))
-
-truck1_miles = round(
-    float(truck1.calculate_best_delivery_route(g.node_list)), 3)
-truck2_miles = round(
-    float(truck2.calculate_best_delivery_route(g.node_list)), 3)
-truck3_miles = round(
-    float(truck3.calculate_best_delivery_route(g.node_list)), 3)
-total_miles = round(truck1_miles + truck2_miles + truck3_miles, 3)
-
-print(f"Truck1: {truck1_miles} miles")
-print(f"Truck2: {truck2_miles} miles")
-print(f"Truck3: {truck3_miles} miles")
-print(f"Total:  {total_miles} miles")
-
-# Fix error in package 9
-truck3.remove_package(p.get_package_by_id('9'))
-p.get_package_by_id('9').update(
-    "410 S State St.", "Third District Juvenile Court", "Salt Lake City", "84111", "")
-truck3.add_package(p.get_package_by_id('9'))
-
-truck3_miles = round(
-    float(truck3.calculate_best_delivery_route(g.node_list)), 3)
-total_miles = round(truck1_miles + truck2_miles + truck3_miles, 3)
-print(f"Total:  {total_miles} miles")
+# Calculate optimal routes for the three loaded up trucks
+# g.node_list contains informations on the edges/nodes that will
+# be used in conjunction with the packages on each truck.
+truck1.calculate_best_delivery_route(g.node_list)
+truck2.calculate_best_delivery_route(g.node_list)
+truck3.calculate_best_delivery_route(g.node_list)
 
 
-# graph_test()
-# package_handler_test()
-# priority_queue_test()
+# Fix error in package 9 before departing
+# truck2.remove_package(p.get_package_by_id('9'))
+# p.get_package_by_id('9').update("410 S State St.", "Third District Juvenile Court", "Salt Lake City", "84111", "")
+# truck2.add_package(p.get_package_by_id('9'))
+
+# Build a time object: 2021-07-01 08:00:00 (July 1, 2021, 8:00 AM)
+eight_am = datetime.datetime(2021, 7, 1, 8, 0, 0, 0)
+
+# Deliver Packages (Truck1)
+# Departure Time: 2021-07-01 08:00:00 (July 1, 2021, 8:00 AM)
+# truck*_return_metrics = [return_time, drive_time_in_hours, drive_distance]
+truck1_return_metrics = truck1.deliver_packages(eight_am)
+
+# Deliver Packages (Truck2)
+# Departure Time: 2021-07-01 08:00:00 (July 1, 2021, 8:00 AM)
+# truck*_return_metrics = [return_time, drive_time_in_hours, drive_distance]
+truck2_return_metrics = truck2.deliver_packages(eight_am)
+
+# Deliver Packages (Truck3)
+# Departure Time: Immediately after truck2 returns
+# truck*_return_metrics = [return_time, drive_time_in_hours, drive_distance]
+truck3_return_metrics = truck3.deliver_packages(truck2_return_metrics[0])
+
+
+total_miles_driven = round(float(truck1_return_metrics[2] + truck2_return_metrics[2] + truck3_return_metrics[2]), 2)
+time_to_deliver_all_packages = round(float(truck2_return_metrics[1] + truck3_return_metrics[1]), 2)
+
+print(f"Total miles driven:        {total_miles_driven}")
+print(f"Hours to deliver packages: {time_to_deliver_all_packages}")

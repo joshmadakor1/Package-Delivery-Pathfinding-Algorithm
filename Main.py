@@ -100,11 +100,11 @@ truck1.add_package(p.get_package_by_id('30'))
 truck1.add_package(p.get_package_by_id('31'))
 # Truck1: -- Remaining Capacity in same Zips
 truck1.add_package(p.get_package_by_id('8'))
-truck1.add_package(p.get_package_by_id('24'))
-truck1.add_package(p.get_package_by_id('27'))
-truck1.add_package(p.get_package_by_id('35'))
-truck1.add_package(p.get_package_by_id('39'))
-truck1.add_package(p.get_package_by_id('10'))
+truck1.add_package(p.get_package_by_id('17'))
+truck1.add_package(p.get_package_by_id('12'))
+truck1.add_package(p.get_package_by_id('22'))
+truck1.add_package(p.get_package_by_id('7'))
+truck1.add_package(p.get_package_by_id('2'))
 
 
 # "Can only be on truck 2" per the rubric
@@ -117,11 +117,11 @@ truck2.add_package(p.get_package_by_id('40'))
 truck2.add_package(p.get_package_by_id('37'))
 truck2.add_package(p.get_package_by_id('34'))
 # Truck2: -- Remaining Capacity in same Zip
-truck2.add_package(p.get_package_by_id('17'))
-truck2.add_package(p.get_package_by_id('12'))
-truck2.add_package(p.get_package_by_id('22'))
-truck2.add_package(p.get_package_by_id('7'))
-truck2.add_package(p.get_package_by_id('2'))
+truck2.add_package(p.get_package_by_id('24'))
+truck2.add_package(p.get_package_by_id('27'))
+truck2.add_package(p.get_package_by_id('35'))
+truck2.add_package(p.get_package_by_id('39'))
+truck2.add_package(p.get_package_by_id('10'))
 
 
 # "Delayed on flight---will not arrive to depot until 9:05 am"
@@ -147,19 +147,31 @@ truck3.add_package(p.get_package_by_id('33'))
 #p.get_package_by_id('9').update("410 S State St.", "Third District Juvenile Court", "Salt Lake City", "84111", "")
 # print(p.get_package_by_id('9'))
 
+truck1_miles = round(
+    float(truck1.calculate_best_delivery_route(g.node_list)), 3)
+truck2_miles = round(
+    float(truck2.calculate_best_delivery_route(g.node_list)), 3)
+truck3_miles = round(
+    float(truck3.calculate_best_delivery_route(g.node_list)), 3)
+total_miles = round(truck1_miles + truck2_miles + truck3_miles, 3)
 
-# print(truck1.calculate_best_delivery_route(g.node_list))
-# print(truck2.calculate_best_delivery_route(g.node_list))
-print(truck3.calculate_best_delivery_route(g.node_list))
+print(f"Truck1: {truck1_miles} miles")
+print(f"Truck2: {truck2_miles} miles")
+print(f"Truck3: {truck3_miles} miles")
+print(f"Total:  {total_miles} miles")
+
+# Fix error in package 9
 truck3.remove_package(p.get_package_by_id('9'))
 p.get_package_by_id('9').update(
     "410 S State St.", "Third District Juvenile Court", "Salt Lake City", "84111", "")
 truck3.add_package(p.get_package_by_id('9'))
-print(truck3.calculate_best_delivery_route(g.node_list))
+
+truck3_miles = round(
+    float(truck3.calculate_best_delivery_route(g.node_list)), 3)
+total_miles = round(truck1_miles + truck2_miles + truck3_miles, 3)
+print(f"Total:  {total_miles} miles")
+
 
 # graph_test()
-
 # package_handler_test()
-
-
 # priority_queue_test()

@@ -15,7 +15,10 @@ class Package:
         self.status = status
 
     def __str__(self):
-        return f"{self.id}, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}, {self.status}"
+        if (self.status != "DELIVERED"):
+            return f"{self.id}, IN TRANSIT, {self.status}, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}"
+        else:
+            return f"{self.id}, {self.status}, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}"
 
     def update(self, new_delivery_address, new_address_name, new_city, new_zip, new_status):
         self.delivery_address = new_delivery_address

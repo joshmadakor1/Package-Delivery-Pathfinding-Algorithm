@@ -8,6 +8,7 @@ class PackageHandler:
     # Default Constructor
     # This will build a hashmap containing all the package data
     def __init__(self):
+        self.TOTAL_PACKAGES = 40
         self.packages = {}
         self.packages_hash_table = HashMap()
         self.build_packages_table_from_csv()
@@ -55,47 +56,53 @@ class PackageHandler:
     # Returns a collection of packages
     def get_packages_by_address(self, address):
         packages = list()
-        for id, package in self.packages.items():
-            if package.delivery_address == address:
+        for id in range(1, self.TOTAL_PACKAGES + 1):
+            package = self.get_package_by_id(str(id))
+            if (package.delivery_address == address):
                 packages.append(package)
         return packages
 
     # O(N)
     def get_packages_by_city(self, city):
         packages = list()
-        for id, package in self.packages.items():
-            if package.delivery_city == city:
+        for id in range(1, self.TOTAL_PACKAGES + 1):
+            package = self.get_package_by_id(str(id))
+            if (package.delivery_city == city):
                 packages.append(package)
         return packages
 
     # O(N)
     def get_packages_by_deadline(self, deadline):
         packages = list()
-        for id, package in self.packages.items():
-            if package.deadline == deadline:
+        for id in range(1, self.TOTAL_PACKAGES + 1):
+            package = self.get_package_by_id(str(id))
+            if (package.deadline == deadline):
                 packages.append(package)
         return packages
 
     # O(N)
     def get_packages_by_zip(self, zip):
         packages = list()
-        for id, package in self.packages.items():
-            if package.delivery_zip == zip:
+        for id in range(1, self.TOTAL_PACKAGES + 1):
+            package = self.get_package_by_id(str(id))
+            if (package.delivery_zip == zip):
                 packages.append(package)
         return packages
 
     # O(N)
     def get_packages_by_weight(self, weight):
         packages = list()
-        for id, package in self.packages.items():
-            if package.weight == weight:
+        for id in range(1, self.TOTAL_PACKAGES + 1):
+            package = self.get_package_by_id(str(id))
+            if (package.weight == weight):
                 packages.append(package)
         return packages
 
     # O(N)
     def get_packages_by_status(self, status):
         packages = list()
-        for id, package in self.packages.items():
-            if package.status == status:
+        for id in range(1, self.TOTAL_PACKAGES + 1):
+            package = self.get_package_by_id(str(id))
+            if (package.status == status):
                 packages.append(package)
         return packages

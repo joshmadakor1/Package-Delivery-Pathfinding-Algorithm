@@ -9,7 +9,8 @@ import datetime
 import time
 from Package import Package
 from queue import Queue
-# TODO: Update fix package 9 during delivery route
+# TODO: FIX Reporting of total drive time
+# TODO: Delivery times are not in order for some reason when displaying (Al)
 # Used for storing package status over time
 package_status_over_time = list()
 
@@ -30,13 +31,16 @@ def initialize_truck1():
     truck1.add_package(package_handler.get_package_by_id('20'))
     truck1.add_package(package_handler.get_package_by_id('29'))
     truck1.add_package(package_handler.get_package_by_id('7'))
-    truck1.add_package(package_handler.get_package_by_id('17'))
+
     truck1.add_package(package_handler.get_package_by_id('12'))
+    truck1.add_package(package_handler.get_package_by_id('30'))
+
     truck1.add_package(package_handler.get_package_by_id('4'))
     truck1.add_package(package_handler.get_package_by_id('40'))
     truck1.add_package(package_handler.get_package_by_id('31'))
     truck1.add_package(package_handler.get_package_by_id('32'))
-    truck1.add_package(package_handler.get_package_by_id('1'))
+    truck1.add_package(package_handler.get_package_by_id('34'))
+    truck1.add_package(package_handler.get_package_by_id('10'))
 
     # --29,7 Together
     # --13,39 together
@@ -50,23 +54,13 @@ def initialize_truck1():
 
 def initialize_truck2():
     # "Can only be on truck 2" per the rubric
+    truck2.add_package(package_handler.get_package_by_id('1'))
     truck2.add_package(package_handler.get_package_by_id('3'))
+    truck2.add_package(package_handler.get_package_by_id('22'))
+    truck2.add_package(package_handler.get_package_by_id('25'))
     truck2.add_package(package_handler.get_package_by_id('18'))
-    truck2.add_package(package_handler.get_package_by_id('36'))
-    truck2.add_package(package_handler.get_package_by_id('38'))
     truck2.add_package(package_handler.get_package_by_id('37'))
-    truck2.add_package(package_handler.get_package_by_id('5'))
-    truck2.add_package(package_handler.get_package_by_id('8'))
-    truck2.add_package(package_handler.get_package_by_id('30'))
-    truck2.add_package(package_handler.get_package_by_id('11'))
-    truck2.add_package(package_handler.get_package_by_id('23'))
-    truck2.add_package(package_handler.get_package_by_id('39'))
-    truck2.add_package(package_handler.get_package_by_id('27'))
-    truck2.add_package(package_handler.get_package_by_id('35'))
-    truck2.add_package(package_handler.get_package_by_id('10'))
-    truck2.add_package(package_handler.get_package_by_id('21'))
-    truck2.add_package(package_handler.get_package_by_id('34'))
-
+    truck2.add_package(package_handler.get_package_by_id('38'))
     # --5,37,38 togehter
     # --40,4 together
     # --27,35 together
@@ -74,17 +68,36 @@ def initialize_truck2():
     truck2.calculate_best_delivery_route(g.node_list)
 
 
+def initialize_truck2_2nd_trip():
+    # "Can only be on truck 2" per the rubric
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('6'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('36'))
+
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('17'))
+
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('5'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('8'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('11'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('23'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('39'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('27'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('35'))
+    truck2_2nd_trip.add_package(package_handler.get_package_by_id('21'))
+    # --5,37,38 togehter
+    # --40,4 together
+    # --27,35 together
+    # --8,30 together
+    truck2_2nd_trip.calculate_best_delivery_route(g.node_list)
+
+
 def initialize_truck3():
 
     # "Delayed on flight---will not arrive to depot until 9:05 am"
-    truck3.add_package(package_handler.get_package_by_id('6'))
     truck3.add_package(package_handler.get_package_by_id('9'))
-    truck3.add_package(package_handler.get_package_by_id('25'))
     truck3.add_package(package_handler.get_package_by_id('26'))
     truck3.add_package(package_handler.get_package_by_id('2'))
     truck3.add_package(package_handler.get_package_by_id('33'))
     truck3.add_package(package_handler.get_package_by_id('28'))
-    truck3.add_package(package_handler.get_package_by_id('22'))
     truck3.add_package(package_handler.get_package_by_id('24'))
     # --25,26 together
     # --2,33 together
@@ -110,6 +123,8 @@ truck1 = Truck("1")
 initialize_truck1()
 truck2 = Truck("2")
 initialize_truck2()
+truck2_2nd_trip = Truck("2-2nd-trip")
+initialize_truck2_2nd_trip()
 truck3 = Truck("3")
 initialize_truck3()
 
@@ -117,6 +132,7 @@ package_9_has_been_updated = False
 
 
 def delivery_simulation(package_status_over_time):
+    package_status_over_time.clear()
     # Build a time object: 2021-07-01 08:00:00 (July 1, 2021, 8:00 AM)
     eight_am = datetime.datetime(2021, 7, 1, 8, 0, 0, 0)
 
@@ -132,20 +148,28 @@ def delivery_simulation(package_status_over_time):
     truck2_return_metrics = truck2.deliver_packages(
         eight_am, package_handler, package_status_over_time, truck1_return_metrics[3])
 
+    # Deliver Packages (Truck2(second trip))
+    # Departure Time: 2021-07-01 08:00:00 (July 1, 2021, 8:00 AM)
+    # truck*_return_metrics = [return_time, drive_time_in_hours, drive_distance]
+    truck2_2nd_trip_return_metrics = truck2_2nd_trip.deliver_packages(
+        truck2_return_metrics[0], package_handler, package_status_over_time, truck2_return_metrics[3])
+
     # Deliver Packages (Truck3)
     # Departure Time: Immediately after truck2 returns
     # truck*_return_metrics = [return_time, drive_time_in_hours, drive_distance]
     # Calculate the best route for truck three if changes occurred
+
+    truck3.delivery_nodes = set()
     initialize_truck3()
     truck3_return_metrics = truck3.deliver_packages(
-        truck2_return_metrics[0], package_handler, package_status_over_time, truck1_return_metrics[3])
+        truck1_return_metrics[0], package_handler, package_status_over_time, truck2_2nd_trip_return_metrics[3])
 
     # Sort the packages by time delivered
     package_status_over_time = sorted(
         package_status_over_time, key=itemgetter(0))
 
     total_miles_driven = round(float(
-        truck1_return_metrics[2] + truck2_return_metrics[2] + truck3_return_metrics[2]), 2)
+        truck1_return_metrics[2] + truck2_return_metrics[2] + truck2_2nd_trip_return_metrics[2] + truck3_return_metrics[2]), 2)
     time_to_deliver_all_packages = round(
         float(truck2_return_metrics[1] + truck3_return_metrics[1]), 2)
 
@@ -168,9 +192,18 @@ def delivery_simulation(package_status_over_time):
     print(
         f"\tTotal Distance: {round(float(truck2_return_metrics[2]),2)} miles")
     print(f"")
+    print("\tTruck2 metrics (2nd trip):")
+    print("\t-----------------------------------")
+    print(f"\tDeparture Time: {truck2_return_metrics[0]}")
+    print(f"\tReturn Time:    {truck2_2nd_trip_return_metrics[0]}")
+    print(
+        f"\tDrive Time:     {round(float(truck2_2nd_trip_return_metrics[1]),2)} hours")
+    print(
+        f"\tTotal Distance: {round(float(truck2_2nd_trip_return_metrics[2]),2)} miles")
+    print("")
     print("\tTruck3 metrics:")
     print("\t----------------------------------")
-    print(f"\tDeparture Time: {truck2_return_metrics[0]}")
+    print(f"\tDeparture Time: {truck1_return_metrics[0]}")
     print(f"\tReturn Time:    {truck3_return_metrics[0]}")
     print(
         f"\tDrive Time:     {round(float(truck3_return_metrics[1]),2)} hours")
@@ -180,10 +213,18 @@ def delivery_simulation(package_status_over_time):
     print(f"\tCombined mileage all trucks:  {total_miles_driven} miles")
     print(
         f"\tTime to deliver all packages: {time_to_deliver_all_packages} hours")
+
+    # Rebuild the graph in case it has changed
     initialize_graph()
+
+    # Rebuild the trucks' routes in case they have changed
     initialize_truck1()
     initialize_truck2()
+    initialize_truck2_2nd_trip()
     initialize_truck3()
+
+    # Clear this, allowing it to be repopulated when the deliver simulation runs again
+    package_status_over_time = list()
 
 
 user_input = ""
@@ -215,7 +256,9 @@ while (user_input != "q"):
 
             if (user_input == "p"):
                 while (not user_input.isnumeric()):
-
+                    # Sort the packages by time delivered
+                    package_status_over_time = sorted(
+                        package_status_over_time, key=itemgetter(0))
                     print("")
                     print(
                         "\tFor up to what time would you like to view package information?")

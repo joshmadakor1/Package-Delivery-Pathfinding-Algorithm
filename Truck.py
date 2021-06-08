@@ -98,6 +98,7 @@ class Truck:
     def deliver_packages(self, departure_time, package_handler, package_status_over_time, package_9_has_been_updated):
         return_time = None
         drive_distance = 0
+        dont_ask_to_update_9 = False
         #print(f"Departure:    {departure_time}")
 
         while (self.delivery_route.qsize() > 0):
@@ -132,9 +133,9 @@ class Truck:
             # print(current_time)
             # Current time at or later than 10:20 triggers the ability to update Package #9's info
             # self.id == "1" is to only ask this when the first truck runs through the simulation
-            if (current_time >= ten_twenty_am and not package_9_has_been_updated and self.id == "1"):
+            if (current_time >= ten_twenty_am and not package_9_has_been_updated and self.id == "2-2nd-trip" and not dont_ask_to_update_9):
                 print(
-                    f"\tDuring the route, new information has come in about package #9!")
+                    f"\tDuring deliver, new information has come in about package #9!")
                 print(
                     f"\tWould you like to correct the address for package #9? Enter 'y' or 'n'")
                 answer = input(">")
@@ -147,16 +148,19 @@ class Truck:
                     answer = input(">")
 
                 if (answer == "y"):
+                    # Update the HashTable with the new Package information
                     package_handler.packages_hash_table.add("9", Package(
                         "9", "Third District Juvenile Court", "410 S State St", "EOD", "Salt Lake City", "84111", "2", "IN TRANSIT"))
                     print(
                         f"\tPackage #9's address has been updated to: 410 S State St., Salt Lake City, UT 84111!")
+                    # The truck that is carrying Package #9 will have it's Map re-balanced/re-optimized
                     package_9_has_been_updated = True
                     # Fix package 9
                 elif (answer == "n"):
                     # Keep wrong address (revert if changed from previous run)
                     package_handler.packages_hash_table.add("9", Package(
                         "9", "Council Hall", "300 State St", "EOD", "Salt Lake City", "84103", "2", "Wrong address listed"))
+                    dont_ask_to_update_9 = True
 
             for pack in current_packages:
                 temp_package = self.packages.get(pack)
@@ -170,14 +174,8 @@ class Truck:
                 #self.save_historical_package_data(package_handler, package_status_over_time, [current_time.strftime("%Y/%m/%d, %H:%M:%S"), package_handler.packages_hash_table])
 
                 # print(temp_package)
-            #print(f"Package ({current_packages}) delivered")
-            #print(f"Current time: {current_time}")
 
-        #nine_hours_from_now = datetime.now() + timedelta(hours=9)
+        # Calculate the return time. This will be used to display metrics later
         return_time = departure_time + timedelta(hours=drive_time_in_hours)
-        #print(f"({self.id}) Departure: {departure_time}")
-        #print(f"({self.id}) Return:    {return_time}")
-        #print(f"({self.id}) Distance:  {round(float(drive_distance),2)} miles")
-        #print(f"({self.id}) Time:      {round(float(drive_time_in_hours),2)} hours")
-        # print("")
+
         return([return_time, drive_time_in_hours, drive_distance, package_9_has_been_updated])

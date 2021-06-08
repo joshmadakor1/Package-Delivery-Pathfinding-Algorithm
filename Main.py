@@ -28,18 +28,19 @@ def initialize_truck1():
     truck1.add_package(package_handler.get_package_by_id('16'))
     truck1.add_package(package_handler.get_package_by_id('19'))
     truck1.add_package(package_handler.get_package_by_id('20'))
-    # Truck1:  -- Deadline 10:30 AM -- #
     truck1.add_package(package_handler.get_package_by_id('29'))
-    truck1.add_package(package_handler.get_package_by_id('1'))
-    truck1.add_package(package_handler.get_package_by_id('30'))
-    truck1.add_package(package_handler.get_package_by_id('31'))
-    # Truck1: -- Remaining Capacity in same Zips
-    truck1.add_package(package_handler.get_package_by_id('8'))
+    truck1.add_package(package_handler.get_package_by_id('7'))
     truck1.add_package(package_handler.get_package_by_id('17'))
     truck1.add_package(package_handler.get_package_by_id('12'))
-    truck1.add_package(package_handler.get_package_by_id('22'))
-    truck1.add_package(package_handler.get_package_by_id('7'))
-    truck1.add_package(package_handler.get_package_by_id('2'))
+    truck1.add_package(package_handler.get_package_by_id('4'))
+    truck1.add_package(package_handler.get_package_by_id('40'))
+    truck1.add_package(package_handler.get_package_by_id('31'))
+    truck1.add_package(package_handler.get_package_by_id('32'))
+    truck1.add_package(package_handler.get_package_by_id('1'))
+
+    # --29,7 Together
+    # --13,39 together
+    # --2,33 Together
 
     # Calculate optimal routes for the three loaded up trucks
     # g.node_list contains informations on the edges/nodes that will
@@ -53,16 +54,23 @@ def initialize_truck2():
     truck2.add_package(package_handler.get_package_by_id('18'))
     truck2.add_package(package_handler.get_package_by_id('36'))
     truck2.add_package(package_handler.get_package_by_id('38'))
-    # -- Deadline 10:30 AM -- #
-    truck2.add_package(package_handler.get_package_by_id('40'))
     truck2.add_package(package_handler.get_package_by_id('37'))
-    truck2.add_package(package_handler.get_package_by_id('34'))
-    # Truck2: -- Remaining Capacity in same Zip
-    truck2.add_package(package_handler.get_package_by_id('24'))
+    truck2.add_package(package_handler.get_package_by_id('5'))
+    truck2.add_package(package_handler.get_package_by_id('8'))
+    truck2.add_package(package_handler.get_package_by_id('30'))
+    truck2.add_package(package_handler.get_package_by_id('11'))
+    truck2.add_package(package_handler.get_package_by_id('23'))
+    truck2.add_package(package_handler.get_package_by_id('39'))
     truck2.add_package(package_handler.get_package_by_id('27'))
     truck2.add_package(package_handler.get_package_by_id('35'))
-    truck2.add_package(package_handler.get_package_by_id('39'))
+    truck2.add_package(package_handler.get_package_by_id('10'))
+    truck2.add_package(package_handler.get_package_by_id('21'))
+    truck2.add_package(package_handler.get_package_by_id('34'))
 
+    # --5,37,38 togehter
+    # --40,4 together
+    # --27,35 together
+    # --8,30 together
     truck2.calculate_best_delivery_route(g.node_list)
 
 
@@ -70,20 +78,19 @@ def initialize_truck3():
 
     # "Delayed on flight---will not arrive to depot until 9:05 am"
     truck3.add_package(package_handler.get_package_by_id('6'))
-    truck3.add_package(package_handler.get_package_by_id('25'))
-    truck3.add_package(package_handler.get_package_by_id('28'))
-    truck3.add_package(package_handler.get_package_by_id('32'))
-    # -- Address will be updated by this time (incorrect address package)
     truck3.add_package(package_handler.get_package_by_id('9'))
-    # -- Remaining Packages
-    truck3.add_package(package_handler.get_package_by_id('10'))
-    truck3.add_package(package_handler.get_package_by_id('4'))
-    truck3.add_package(package_handler.get_package_by_id('5'))
-    truck3.add_package(package_handler.get_package_by_id('11'))
-    truck3.add_package(package_handler.get_package_by_id('21'))
-    truck3.add_package(package_handler.get_package_by_id('23'))
+    truck3.add_package(package_handler.get_package_by_id('25'))
     truck3.add_package(package_handler.get_package_by_id('26'))
+    truck3.add_package(package_handler.get_package_by_id('2'))
     truck3.add_package(package_handler.get_package_by_id('33'))
+    truck3.add_package(package_handler.get_package_by_id('28'))
+    truck3.add_package(package_handler.get_package_by_id('22'))
+    truck3.add_package(package_handler.get_package_by_id('24'))
+    # --25,26 together
+    # --2,33 together
+    # --31,32 together
+    # -- Address will be updated by this time (incorrect address package)
+    # -- Remaining Packages
 
     # Calculate optimal routes for the three loaded up trucks
     # g.node_list contains informations on the edges/nodes that will

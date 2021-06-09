@@ -1,16 +1,13 @@
-from queue import PriorityQueue
-from typing import final
-from HashMap import HashMap
 from PackageHandler import PackageHandler
 from Graph import Graph
 from Truck import Truck
 from operator import itemgetter
-import datetime
-import time
-from Package import Package
 from queue import Queue
-# TODO: FIX Reporting of total drive time
-# TODO: Delivery times are not in order for some reason when displaying (Al)
+import datetime
+
+# TODO: BIG-O notation
+# TODO: make searching case insensitive
+
 # Used for storing package status over time
 package_status_over_time = list()
 
@@ -20,95 +17,81 @@ g = Graph()
 # Initialize Packages
 package_handler = PackageHandler()
 
+# O(N)
+# Add packages to the truck and optimizes delivery route
+
 
 def initialize_truck1():
-    # Truck1: These packages must be delivered together per the rubric
-    truck1.add_package(package_handler.get_package_by_id('13'))
-    truck1.add_package(package_handler.get_package_by_id('14'))
-    truck1.add_package(package_handler.get_package_by_id('15'))
-    truck1.add_package(package_handler.get_package_by_id('16'))
-    truck1.add_package(package_handler.get_package_by_id('19'))
-    truck1.add_package(package_handler.get_package_by_id('20'))
-    truck1.add_package(package_handler.get_package_by_id('29'))
-    truck1.add_package(package_handler.get_package_by_id('7'))
+    # These are the package ids for the packages that this truck will deliver
+    truck1_packages = {'13', '14', '10', '34', '32', '31',
+                       '40', '4', '30', '12', '7', '29', '20', '19', '16', '15'}
 
-    truck1.add_package(package_handler.get_package_by_id('12'))
-    truck1.add_package(package_handler.get_package_by_id('30'))
-
-    truck1.add_package(package_handler.get_package_by_id('4'))
-    truck1.add_package(package_handler.get_package_by_id('40'))
-    truck1.add_package(package_handler.get_package_by_id('31'))
-    truck1.add_package(package_handler.get_package_by_id('32'))
-    truck1.add_package(package_handler.get_package_by_id('34'))
-    truck1.add_package(package_handler.get_package_by_id('10'))
-
-    # --29,7 Together
-    # --13,39 together
-    # --2,33 Together
+    # O(N)
+    # Add the packages to the truck
+    for package in truck1_packages:
+        truck1.add_package(package_handler.get_package_by_id(package))
 
     # Calculate optimal routes for the three loaded up trucks
-    # g.node_list contains informations on the edges/nodes that will
-    # be used in conjunction with the packages on each truck.
-    truck1.calculate_best_delivery_route(g.node_list)
+    # g.adjacency_matrix contains informations on the edges/nodes
+    truck1.optimize_delivery_route(g.adjacency_matrix)
+
+# O(N)
+# Add packages to the truck and optimizes delivery route
 
 
 def initialize_truck2():
-    # "Can only be on truck 2" per the rubric
-    truck2.add_package(package_handler.get_package_by_id('1'))
-    truck2.add_package(package_handler.get_package_by_id('3'))
-    truck2.add_package(package_handler.get_package_by_id('22'))
-    truck2.add_package(package_handler.get_package_by_id('25'))
-    truck2.add_package(package_handler.get_package_by_id('18'))
-    truck2.add_package(package_handler.get_package_by_id('37'))
-    truck2.add_package(package_handler.get_package_by_id('38'))
-    # --5,37,38 togehter
-    # --40,4 together
-    # --27,35 together
-    # --8,30 together
-    truck2.calculate_best_delivery_route(g.node_list)
+    # These are the package ids for the packages that this truck will deliver
+    truck2_packages = {'1', '3', '22', '25', '18', '37', '38'}
+
+    # O(N)
+    # Add the packages to the truck
+    for package in truck2_packages:
+        truck2.add_package(package_handler.get_package_by_id(package))
+
+    # Calculate optimal routes for the three loaded up trucks
+    # g.adjacency_matrix contains informations on the edges/nodes
+    truck2.optimize_delivery_route(g.adjacency_matrix)
+
+# O(N)
+# Add packages to the truck and optimizes delivery route
 
 
 def initialize_truck2_2nd_trip():
-    # "Can only be on truck 2" per the rubric
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('6'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('36'))
 
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('17'))
+    # These are the package ids for the packages that this truck will deliver
+    truck2_2nd_trip_packages = {'6', '36', '17',
+                                '5', '8', '11', '23', '39', '27', '35', '21'}
 
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('5'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('8'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('11'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('23'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('39'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('27'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('35'))
-    truck2_2nd_trip.add_package(package_handler.get_package_by_id('21'))
-    # --5,37,38 togehter
-    # --40,4 together
-    # --27,35 together
-    # --8,30 together
-    truck2_2nd_trip.calculate_best_delivery_route(g.node_list)
+    # O(N)
+    # Add the packages to the truck
+    for package in truck2_2nd_trip_packages:
+        truck2_2nd_trip.add_package(package_handler.get_package_by_id(package))
+
+    # Calculate optimal routes for the three loaded up trucks
+    # g.adjacency_matrix contains informations on the edges/nodes
+    truck2_2nd_trip.optimize_delivery_route(g.adjacency_matrix)
+
+# O(N)
+# Add packages to the truck and optimizes delivery route
 
 
 def initialize_truck3():
 
-    # "Delayed on flight---will not arrive to depot until 9:05 am"
-    truck3.add_package(package_handler.get_package_by_id('9'))
-    truck3.add_package(package_handler.get_package_by_id('26'))
-    truck3.add_package(package_handler.get_package_by_id('2'))
-    truck3.add_package(package_handler.get_package_by_id('33'))
-    truck3.add_package(package_handler.get_package_by_id('28'))
-    truck3.add_package(package_handler.get_package_by_id('24'))
-    # --25,26 together
-    # --2,33 together
-    # --31,32 together
-    # -- Address will be updated by this time (incorrect address package)
-    # -- Remaining Packages
+    # These are the package ids for the packages that this truck will deliver
+    truck3_trip_packages = {'9', '26', '2', '33', '28', '24', }
+
+    # O(N)
+    # Add the packages to the truck
+    for package in truck3_trip_packages:
+        truck3.add_package(package_handler.get_package_by_id(package))
 
     # Calculate optimal routes for the three loaded up trucks
-    # g.node_list contains informations on the edges/nodes that will
-    # be used in conjunction with the packages on each truck.
-    truck3.calculate_best_delivery_route(g.node_list)
+    # g.adjacency_matrix contains informations on the edges/nodes
+    truck3.optimize_delivery_route(g.adjacency_matrix)
+
+# O(N)
+# Reads in data from the CSV files and stores the information
+# This information will be used to formulate optimized delivery maps
 
 
 def initialize_graph():
@@ -120,15 +103,29 @@ def initialize_graph():
 # Initialize Trucks with their ids
 initialize_graph()
 truck1 = Truck("1")
-initialize_truck1()
 truck2 = Truck("2")
-initialize_truck2()
 truck2_2nd_trip = Truck("2-2nd-trip")
-initialize_truck2_2nd_trip()
 truck3 = Truck("3")
+initialize_truck1()
+initialize_truck2()
+initialize_truck2_2nd_trip()
 initialize_truck3()
 
+# Keep track of whether or not Package 9's address has been updated
 package_9_has_been_updated = False
+
+# O(N)
+# Runs the delivery simulation
+#   Truck1 and Truck2 both leave at 8am
+#   Truck2 returns and performs a second trip
+#   Truck3 leaves when Truck1 returns
+#
+#  Delivery information will be printed out on the screen:
+#   Total Drive Time and Miles for each truck
+#
+# @para - package_status_over_time:
+#   Used to store delivery information that is later used to query
+#   package statuses at different points along the way.
 
 
 def delivery_simulation(package_status_over_time):
@@ -158,21 +155,26 @@ def delivery_simulation(package_status_over_time):
     # Departure Time: Immediately after truck2 returns
     # truck*_return_metrics = [return_time, drive_time_in_hours, drive_distance]
     # Calculate the best route for truck three if changes occurred
-
+    # Re-initialize Truck3 to account for if Package #9 had its address updated
     truck3.delivery_nodes = set()
     initialize_truck3()
     truck3_return_metrics = truck3.deliver_packages(
         truck1_return_metrics[0], package_handler, package_status_over_time, truck2_2nd_trip_return_metrics[3])
 
-    # Sort the packages by time delivered
+    # Sort package_status_over_time by time delivered. This will be used to see the status
+    # throughout the delivery lifecycle
     package_status_over_time = sorted(
         package_status_over_time, key=itemgetter(0))
 
+    # Calculate the total miles driven by all three trucks
     total_miles_driven = round(float(
         truck1_return_metrics[2] + truck2_return_metrics[2] + truck2_2nd_trip_return_metrics[2] + truck3_return_metrics[2]), 2)
-    time_to_deliver_all_packages = round(
-        float(truck2_return_metrics[1] + truck3_return_metrics[1]), 2)
 
+    # Calculate the total time it took to deliver all the packages by
+    time_to_deliver_all_packages = round(
+        float(truck1_return_metrics[1] + truck2_2nd_trip_return_metrics[1]), 2)
+
+    # Print out Delivery metrics/outcome to the screen
     print("")
     print("\tTruck1 metrics:")
     print("\t-----------------------------------")
@@ -214,19 +216,21 @@ def delivery_simulation(package_status_over_time):
     print(
         f"\tTime to deliver all packages: {time_to_deliver_all_packages} hours")
 
-    # Rebuild the graph in case it has changed
+    # Rebuild the graph in case it has changed due to package updates
     initialize_graph()
 
-    # Rebuild the trucks' routes in case they have changed
+    # Rebuild the trucks' routes in case they have changed due to package updates
     initialize_truck1()
     initialize_truck2()
     initialize_truck2_2nd_trip()
     initialize_truck3()
 
-    # Clear this, allowing it to be repopulated when the deliver simulation runs again
+    # Clear package_status_over_time, allowing it to be repopulated when the
+    # delivery simulation runs again
     package_status_over_time = list()
 
 
+# Run the user interface
 user_input = ""
 while (user_input != "q"):
     print("")
@@ -284,7 +288,7 @@ while (user_input != "q"):
                     print(
                         f"\t32 - {package_status_over_time[32][0]}\t33 - {package_status_over_time[33][0]}\t34 - {package_status_over_time[34][0]}\t35 - {package_status_over_time[35][0]}")
                     print(
-                        f"\t36 - {package_status_over_time[36][0]}\t37 - {package_status_over_time[37][0]}\t38 - {package_status_over_time[38][0]}\t39 - {package_status_over_time[39][0]}")
+                        f"\t36 - {package_status_over_time[36][0]}\t37 - {package_status_over_time[37][0]}\t38 - {package_status_over_time[38][0]}\t39 - {package_status_over_time[39][0]} (and later)")
                     print("")
                     user_input = input(">").lower()
 
@@ -321,14 +325,24 @@ while (user_input != "q"):
                         print("")
                         query_type = input(">")
 
+                    # If the user wants to return ALL packages
                     if (query_type == "a"):
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A queue that will hold all the packages to be printed to the screen
                         final_package_status = Queue()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+
+                        # Get the package IDs of those packages that were not delivered (from above)
+                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
+                        # Setting the status to an emptry string will default them to IN TRANSIT,
+                        # Otherwise, add the package as-is
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -343,23 +357,37 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]}")
                         print("\t---------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         while(final_package_status.qsize() > 0):
                             print(f"\t{final_package_status.get()}")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
 
+                    # If the user wants to return a package matching an index number
                     elif (query_type == "i"):
                         print("")
                         print("\tEnter the Target Package ID. Example: 14")
                         print("")
                         target_id = input(">")
                         print("")
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A list that will hold all the packages to be printed to the screen
                         final_package_status = list()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+
+                        # Get the package IDs of those packages that were not delivered (from above)
+                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
+                        # Setting the status to an emptry string will default them to IN TRANSIT,
+                        # Otherwise, add the package as-is
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -379,11 +407,17 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with ID [{target_id}]:")
                         print("\t--------------------------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         if (package_filtered_by_id != ""):
                             print(f"\t{package_filtered_by_id}")
                         else:
                             print("\tNo packages found with that criteria.")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
+
+                    # If the user wants to return a package matching an address
                     elif (query_type == "r"):
                         print("")
                         print(
@@ -391,13 +425,23 @@ while (user_input != "q"):
                         print("")
                         target_address = input(">")
                         print("")
+
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A list that will hold all the packages to be printed to the screen
                         final_package_status = list()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+
+                        # Get the package IDs of those packages that were not delivered (from above)
+                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
+                        # Setting the status to an emptry string will default them to IN TRANSIT,
+                        # Otherwise, add the package as-is
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -417,12 +461,18 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with ADDRESS [{target_address}]:")
                         print("\t--------------------------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         if (len(packages_filtered_by_address) != 0):
                             for pack in packages_filtered_by_address:
                                 print(f"\t{pack}")
                         else:
                             print("\tNo packages found with that criteria.")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
+
+                    # If the user wants to return a package matching a deadline
                     elif (query_type == "d"):
                         print("")
                         print(
@@ -430,13 +480,18 @@ while (user_input != "q"):
                         print("")
                         target_deadline = input(">")
                         print("")
+
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A queue that will hold all the packages to be printed to the screen
                         final_package_status = list()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -448,7 +503,10 @@ while (user_input != "q"):
                                     str(j))
                                 final_package_status.append(str(package))
 
+                        # A list to hold the deadlines grabbed from final_package_status
                         packages_filtered_by_deadline = list()
+
+                        # Add the packages who's status match the target status into the deadline list
                         for package in final_package_status:
                             if (package.split(",")[4].strip() == target_deadline):
                                 packages_filtered_by_deadline.append(package)
@@ -456,12 +514,18 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with DEADLINE [{target_deadline}]:")
                         print("\t--------------------------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         if (len(packages_filtered_by_deadline) != 0):
                             for pack in packages_filtered_by_deadline:
                                 print(f"\t{pack}")
                         else:
                             print("\tNo packages found with that criteria.")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
+
+                    # If the user wants to return a package matching a city
                     elif (query_type == "c"):
                         print("")
                         print(
@@ -469,13 +533,23 @@ while (user_input != "q"):
                         print("")
                         target_city = input(">")
                         print("")
+
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A queue that will hold all the packages to be printed to the screen
                         final_package_status = list()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+
+                        # Get the package IDs of those packages that were not delivered (from above)
+                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
+                        # Setting the status to an emptry string will default them to IN TRANSIT,
+                        # Otherwise, add the package as-is
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -488,6 +562,9 @@ while (user_input != "q"):
                                 final_package_status.append(str(package))
 
                         packages_filtered_by_city = list()
+
+                        # Step through the packages and grab only the ones where the city matches
+                        # the user input
                         for package in final_package_status:
                             if (package.split(",")[5].strip() == target_city):
                                 packages_filtered_by_city.append(package)
@@ -495,12 +572,18 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with DELIVERY_CITY [{target_city}]:")
                         print("\t--------------------------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         if (len(packages_filtered_by_city) != 0):
                             for pack in packages_filtered_by_city:
                                 print(f"\t{pack}")
                         else:
                             print("\tNo packages found with that criteria.")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
+
+                    # If the user wants to return a package matching a zip
                     elif (query_type == "z"):
                         print("")
                         print(
@@ -508,13 +591,23 @@ while (user_input != "q"):
                         print("")
                         target_zip = input(">")
                         print("")
+
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A queue that will hold all the packages to be printed to the screen
                         final_package_status = list()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+
+                        # Get the package IDs of those packages that were not delivered (from above)
+                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
+                        # Setting the status to an emptry string will default them to IN TRANSIT,
+                        # Otherwise, add the package as-is
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -534,12 +627,18 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with DELIVERY_ZIP [{target_zip}]:")
                         print("\t--------------------------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         if (len(packages_filtered_by_zip) != 0):
                             for pack in packages_filtered_by_zip:
                                 print(f"\t{pack}")
                         else:
                             print("\tNo packages found with that criteria.")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
+
+                    # If the user wants to return a package matching a certain weight
                     elif (query_type == "w"):
                         print("")
                         print(
@@ -547,13 +646,25 @@ while (user_input != "q"):
                         print("")
                         target_weight = input(">")
                         print("")
+
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A queue that will hold all the packages to be printed to the screen
                         final_package_status = list()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
                             #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
                             # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+
+                        # Get the package IDs of those packages that were not delivered (from above)
+                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
+                        # Setting the status to an emptry string will default them to IN TRANSIT,
+                        # Otherwise, add the package as-is
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -573,12 +684,18 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with WEIGHT [{target_weight}]:")
                         print("\t--------------------------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         if (len(packages_filtered_by_weight) != 0):
                             for pack in packages_filtered_by_weight:
                                 print(f"\t{pack}")
                         else:
                             print("\tNo packages found with that criteria.")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
+
+                    # If the user wants to return a package matching a certain status
                     elif (query_type == "s"):
                         print("")
                         print(
@@ -586,13 +703,25 @@ while (user_input != "q"):
                         print("")
                         target_status = input(">")
                         print("")
+
+                        # Set that will hold packages that have been delievered up to the given time
                         delivered_packages = set()
+
+                        # A list that will hold all the packages to be printed to the screen
                         final_package_status = list()
+
+                        # Step through the delivery history, grabbing entries up until the specified time
+                        # and placing them into the delivered_packages set
                         for i in range(0, int(user_input) + 1):
                             #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
                             delivered_packages.add((package_status_over_time[i][1])[
                                                    0:(package_status_over_time[i][1]).index(",")])
                             # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+
+                        # Get the package IDs of those packages that were not delivered (from above)
+                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
+                        # Setting the status to an emptry string will default them to IN TRANSIT,
+                        # Otherwise, add the package as-is
                         for j in range(1, 41):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
@@ -612,14 +741,15 @@ while (user_input != "q"):
                         print(
                             f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with STATUS [{target_status}]:")
                         print("\t--------------------------------------------------")
+
+                        # Print out all the packages with their statuses to the user
                         if (len(packages_filtered_by_status) != 0):
                             for pack in packages_filtered_by_status:
                                 print(f"\t{pack}")
                         else:
                             print("\tNo packages found with that criteria.")
-                        user_input = "b"
-                    elif (query_type == "s"):
-                        print("enter Status")
+
+                        # Reset input to "b" to go back to the main menu
                         user_input = "b"
 
                 elif(user_input == "b"):

@@ -20,6 +20,7 @@ class Package:
         else:
             return f"{self.id}, {self.status}, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}"
 
+    # Updates a package based on supplied parameters
     def update(self, new_delivery_address, new_address_name, new_city, new_zip, new_status):
         self.delivery_address = new_delivery_address
         self.address_name = new_address_name
@@ -27,8 +28,10 @@ class Package:
         self.delivery_zip = new_zip
         self.status = new_status
 
+    # Sets the status of a package
     def set_status(self, status):
         self.status = status
 
+    # Returns the status of a package
     def get_status(self):
         return self.status

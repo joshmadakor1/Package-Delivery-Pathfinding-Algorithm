@@ -35,7 +35,16 @@ class Truck:
         self.package_count -= 1
         self.delivery_nodes.discard(package.address_name)
 
-    def calculate_best_delivery_route(self, node_list):
+    # Algorithm used to optimize a deliver route
+    # Algorithm type: Nearest Neighbor Algorithm
+    #
+    # @param start - starts from the home base, Western Governors University
+    # @param nodes_remaining - the delivery locations for the packages on the truck
+    #
+    # Starts from home base and makes deliveries in order, always going
+    #   to the next closest node
+    #
+    def optimize_delivery_route(self, node_list):
         current_node = "Western Governors University"
         self.delivery_route = Queue()
         next_node_for_delivery_route = None

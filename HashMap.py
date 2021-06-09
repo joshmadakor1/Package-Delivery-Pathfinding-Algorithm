@@ -3,12 +3,13 @@ class HashMap:
     def __init__(self):
         self.size = 128
         self.map = [None] * self.size
-        self.length = -1  # -1 Accounts for \ufeff in top row
+        self.length = -1  # -1 Accounts for \ufeff in top row of CSV for some reason
 
     # Calculates the array index where the item will stored
     def calculate_hash_index(self, input):
         pre_mod_hash = 0
-        # Sum up the ASCII/Decimal value of the input.
+
+        # Very basic hashing function; sum up the ASCII/Decimal value of the input.
         for c in input:
             pre_mod_hash += ord(c)
         return pre_mod_hash % self.size

@@ -6,6 +6,83 @@ from Package import Package
 import sys
 import datetime
 
+'''
+************************************************************************************************
+                            Truck Class Pseudocode with BIG-O Analysis
+                                TOTAL CLASS COMPLEXITY: XXXXXXX
+************************************************************************************************
+        
+
+
+        __init__ is used to initialize the class properties
+************************************************************************************************       
+        __init__
+        METHOD COMPLEXITY: O(6) -> O(1)
+            INITIALIZE TRUCK SPEED:   O(1) - self.SPEED_MPH = 18
+            INITIALIZE TRUCK ID:      O(1) - self.id = id 
+            INITIALIZE PACKAGES:      O(1) - self.packages = HashMap()
+            INITIALIZE DEL. NODES:    O(1) - self.delivery_nodes = set()
+            INITIALIZE TRUCK ROUTE:   O(1) - self.delivery_route = Queue()
+            INITIALIZE PACKAGE COUNT: O(1) - self.package_count = 0
+        
+
+        add_package adds packages to the trucks current load and adds loc. to list
+************************************************************************************************* 
+        add_package
+        METHOD COMPLEXITY: O(3) -> O(1)
+            ADD PACKAGES TO HASHMAP:               O(1) - packages.add(package.id, package)
+            INCREMENT PACKAGES COUNT BY ONE:       O(1) - package_count += 1
+            ADD THE PACKAGE ADDRESS TO DEL. NODES: O(1) - delivery_nodes.add(package.address_name)
+
+
+        remove_package removes packages from the trucks current load, decrements the package
+        count, as well as removes the location from the list
+************************************************************************************************* 
+        remove_package
+        METHOD COMPLEXITY: O(3) -> O(1)
+            REMOVE PACKAGE FROM HASHMAP:     O(1) - packages.remove(package)
+            DECREMENT PACKAGES COUNT BY ONE: O(1) - package_count -= 1
+            REMOVE THE PACKAGE DEL. NODES:   O(1) - delivery_nodes.discard(package.address_name)
+
+
+        optimize_delivery_route 
+        Algorithm used to optimize a deliver route
+        Algorithm type: Nearest Neighbor Algorithm
+            Starts from home base and calculates the next delivery based on the distance
+            (weight) to the next node.
+************************************************************************************************* 
+        optimize_delivery_route
+        METHOD COMPLEXITY: O(5 + 2N + N^2) -> O(N^2)
+            SET THE HOME BASE NODE:                  O(1) - current_node = "Western Gov..."
+            INITIALIZE THE QUEUE FOR THE DEL. ROUTE: O(1) - delivery_route = Queue()
+            INITIALIZE THE VAR. FOR THE NEXT NODE:   O(1) - next_node_for_delivery_route = None
+            INITIALIZE THE DELIVERY DISTANCE:        O(1) - total_distance = 0
+            COPY THE DELIVERY NODES INTO NEW ARRAY:  O(N) - nodes_remaining = delivery_nodes.copy()
+            FOR EVERY DELIVERY NODE, INSPECT EACH
+                EDGE AND CHOSE THE NEAREST ONE:      O(N^2) - while (len(nodes_remaining) > 0):
+                                                                for edge in edges: [Choose nearest]
+            ADD ONE LAST ROUTE RETURNING TO BASE:    O(N) -  for edge in edges:
+                                                                if (edge.to_node == (home)): (add)
+
+
+        get_packages_currently_being_delivered 
+************************************************************************************************* 
+        get_packages_currently_being_delivered
+
+
+        save_historical_package_data 
+************************************************************************************************* 
+        save_historical_package_data
+
+
+        deliver_packages 
+************************************************************************************************* 
+        deliver_packages
+
+
+        
+'''
+
 
 class Truck:
 

@@ -18,7 +18,7 @@ from Node import Node
         METHOD COMPLEXITY: O(3) -> O(1)
             INITIALIZE LOCATION NAMES:     O(1) - self.location_names = [None] * 27 
             INITIALIZE RAW DISTANCE ARRAY: O(1) - self.raw_distance_data = [] 
-            INITIALIZE aDJACENCY MATRIX:   O(1) - self.adjacency_matrix = HashMap() 
+            INITIALIZE ADJACENCY MATRIX:   O(1) - self.adjacency_matrix = HashMap() 
 
 
         initialize_location_name_data reads in location data from the csv

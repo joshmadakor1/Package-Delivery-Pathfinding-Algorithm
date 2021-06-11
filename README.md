@@ -2,9 +2,7 @@
 
 ## WGUPS Routing Program
 
-This is a project specified by WGU to solve a package delivery routing problem,
-which is essentially the TSP problem. For my solution I implemented the 2-opt
-algorithm, which is a known solution to the TSP that runs in `O(n^2)`.
+This is a project specified by WGU to solve a package delivery routing problem, which is essentially the Traveling Salesman Problem with only a single starting node (out of 27). For my solution I implemented the nearest neighbor algorithm.
 
 ## Usage
 

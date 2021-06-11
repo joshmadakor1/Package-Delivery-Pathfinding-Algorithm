@@ -1,3 +1,4 @@
+# Nnamdi Joshua Madakor, ID: 000214961
 import csv
 from Package import Package
 from HashMap import HashMap
@@ -5,8 +6,10 @@ from HashMap import HashMap
 
 class PackageHandler:
 
+    # Time-complexity: O(4) -> O(1)
     # Default Constructor
     # This will build a hashmap containing all the package data
+    #
     def __init__(self):
         self.TOTAL_PACKAGES = 40
         self.packages = {}
@@ -16,15 +19,23 @@ class PackageHandler:
     def __iter__(self):
         return iter([package for id, package in self.packages.items()])
 
-    # Method to get size
+    # Time-complexity: O(1)
+    # This method returns the number of packages the current set
+    #
     def __len__(self):
         return len(self.packages)
 
+    # Time-complexity: O(1)
+    # This method adds a package to the current packages set
     # Method to insert item
     def insert(self, item):
         self.packages[item.id] = item
 
-    # O(N)
+    # Time complexity: O(n + n) = O(2n) -> O(n)
+    # This method loads in the distance names from the distances_names.csv file
+    #   as well as the packages information from the packages.csv file
+    #   and then uses that information to construct the location_address_to_names
+    #   hashmap.
     def build_packages_table_from_csv(self):
         location_address_to_names = HashMap()
 
@@ -48,12 +59,13 @@ class PackageHandler:
                 self.packages_hash_table.add(entry[0], Package(id=entry[0], address_name=location_address_to_names.get(entry[1]), delivery_address=entry[1], deadline=entry[5],
                                                                delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status=entry[7]))
 
-    # O(1)
+    # Time complexity: O(1)
+    # This method returns a package based on its ID
     def get_package_by_id(self, id):
         return self.packages_hash_table.get(id)
 
-    # O(N)
-    # Returns a collection of packages
+    # Time-complexity: O(n)
+    # This method returns a list of packages matching the input address
     def get_packages_by_address(self, address):
         packages = list()
         for id in range(1, self.TOTAL_PACKAGES + 1):
@@ -62,7 +74,8 @@ class PackageHandler:
                 packages.append(package)
         return packages
 
-    # O(N)
+    # Time-complexity: O(n)
+    # This method returns a list of packages matching the input city
     def get_packages_by_city(self, city):
         packages = list()
         for id in range(1, self.TOTAL_PACKAGES + 1):
@@ -71,7 +84,8 @@ class PackageHandler:
                 packages.append(package)
         return packages
 
-    # O(N)
+    # Time-complexity: O(n)
+    # This method returns a list of packages matching the input deadline
     def get_packages_by_deadline(self, deadline):
         packages = list()
         for id in range(1, self.TOTAL_PACKAGES + 1):
@@ -80,7 +94,8 @@ class PackageHandler:
                 packages.append(package)
         return packages
 
-    # O(N)
+    # Time-complexity: O(n)
+    # This method returns a list of packages matching the input zip
     def get_packages_by_zip(self, zip):
         packages = list()
         for id in range(1, self.TOTAL_PACKAGES + 1):
@@ -89,7 +104,8 @@ class PackageHandler:
                 packages.append(package)
         return packages
 
-    # O(N)
+    # Time-complexity: O(n)
+    # This method returns a list of packages matching the input weight
     def get_packages_by_weight(self, weight):
         packages = list()
         for id in range(1, self.TOTAL_PACKAGES + 1):
@@ -98,7 +114,8 @@ class PackageHandler:
                 packages.append(package)
         return packages
 
-    # O(N)
+    # Time-complexity: O(n)
+    # This method returns a list of packages matching the input status
     def get_packages_by_status(self, status):
         packages = list()
         for id in range(1, self.TOTAL_PACKAGES + 1):

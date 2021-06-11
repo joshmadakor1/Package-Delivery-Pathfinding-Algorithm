@@ -64,8 +64,8 @@ class Graph:
         self.raw_distance_data = []
         self.adjacency_matrix = HashMap()
 
-    # Populates the location name data
-    # O(N); where N = number of rows of location name data
+    # Time-complexity: O(n)
+    # This method reads-in and stores the location name data
     def initialize_location_name_data(self):
 
         with open("./data/distance_names.csv") as file:
@@ -79,14 +79,18 @@ class Graph:
             self.location_names[i] = entry
             i += 1
 
-    # Populates the location distance data
-    # O(N); where N = number of rows of location distance data
+    # Time-complexity: O(n)
+    # This method reads-in and stores the package distance data.
+    # This data is later used to create the complete graph
     def initialize_location_distance_data(self):
         with open("./data/distance_data.csv") as file:
             reader = csv.reader(file)
             self.raw_distance_data = list(reader)
 
-    # Builds the hashmap which contains all the edges
+    # Time-complexity: O(n^2)
+    # This method takes the raw_distance_data read in from distance_data.csv
+    #   and organizes it into a hashmap containing all of the possible nodes and
+    #   their corresponding edges
     def initialize_nodes_hashmap(self):
         for i in range(len(self.raw_distance_data)):
             for j in range(len(self.raw_distance_data)):
@@ -101,8 +105,8 @@ class Graph:
                         from_node=self.location_names[i][1], to_node=self.location_names[j][1], weight=self.raw_distance_data[j][i])
                     # list.append([self.location_names[j][1], self.raw_distance_data[j][i]])
 
-    # Adds a node to  adjacency_matrix
-    # O(1)
+    # Time-complexity: O(1)
+    # This method adds a node to adjacency_matrix
     def add_node(self, from_node, to_node, weight):
         node = self.adjacency_matrix.get(from_node)
         if node != None:
@@ -116,9 +120,9 @@ class Graph:
             self.adjacency_matrix.add(
                 from_node, Node(from_node, [Edge(from_node, to_node, weight)]))
 
-    # USED FOR TESTING ONLY
-    # Prints the nodes. This was use for testing purposes.
     # O((V-1)^2); where V = number of verticies
+    # USED FOR TESTING ONLY
+    # This method prints all the nodes in the adjacency list
     def print_nodes(self):
         for from_vertex in self.location_names:
             connected_verticies = []

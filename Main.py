@@ -1,3 +1,4 @@
+# Nnamdi Joshua Madakor, ID: 000214961
 from PackageHandler import PackageHandler
 from Graph import Graph
 from Truck import Truck
@@ -5,8 +6,6 @@ from operator import itemgetter
 from queue import Queue
 import datetime
 
-# TODO: BIG-O notation
-# TODO: make searching case insensitive
 
 # Used for storing package status over time
 package_status_over_time = list()
@@ -17,8 +16,9 @@ g = Graph()
 # Initialize Packages
 package_handler = PackageHandler()
 
-# O(N)
+# Time-complexity: O(n)
 # Add packages to the truck and optimizes delivery route
+# initialize_truck3
 
 
 def initialize_truck1():
@@ -35,8 +35,9 @@ def initialize_truck1():
     # g.adjacency_matrix contains informations on the edges/nodes
     truck1.optimize_delivery_route(g.adjacency_matrix)
 
-# O(N)
+# Time-complexity: O(n)
 # Add packages to the truck and optimizes delivery route
+# initialize_truck3
 
 
 def initialize_truck2():
@@ -52,8 +53,9 @@ def initialize_truck2():
     # g.adjacency_matrix contains informations on the edges/nodes
     truck2.optimize_delivery_route(g.adjacency_matrix)
 
-# O(N)
+# Time-complexity: O(n)
 # Add packages to the truck and optimizes delivery route
+# initialize_truck3
 
 
 def initialize_truck2_2nd_trip():
@@ -71,8 +73,9 @@ def initialize_truck2_2nd_trip():
     # g.adjacency_matrix contains informations on the edges/nodes
     truck2_2nd_trip.optimize_delivery_route(g.adjacency_matrix)
 
-# O(N)
+# Time-complexity: O(n)
 # Add packages to the truck and optimizes delivery route
+# initialize_truck3
 
 
 def initialize_truck3():
@@ -89,9 +92,8 @@ def initialize_truck3():
     # g.adjacency_matrix contains informations on the edges/nodes
     truck3.optimize_delivery_route(g.adjacency_matrix)
 
-# O(N)
-# Reads in data from the CSV files and stores the information
-# This information will be used to formulate optimized delivery maps
+# Time-complexity: O(n + n + n^2) = O(2n + n^2) -> O(n^2)
+# initialize_graph
 
 
 def initialize_graph():
@@ -114,7 +116,7 @@ initialize_truck3()
 # Keep track of whether or not Package 9's address has been updated
 package_9_has_been_updated = False
 
-# O(N)
+# O(n + n + n) -> O(3n) -> O(n)
 # Runs the delivery simulation
 #   Truck1 and Truck2 both leave at 8am
 #   Truck2 returns and performs a second trip
@@ -230,6 +232,11 @@ def delivery_simulation(package_status_over_time):
     package_status_over_time = list()
 
 
+# Time-complexity: O(3n) -> O(n)
+# Code blocks executed:
+#   run delivery simulation  -> O(n)
+#   package history sort     -> O(n)
+#   package query branch     -> O(n)
 # Run the user interface
 user_input = ""
 while (user_input != "q"):
@@ -753,6 +760,7 @@ while (user_input != "q"):
                         user_input = "b"
 
                 elif(user_input == "b"):
+                    # Setting the user_input to an empty strill will restart the program
                     user_input = ""
                 else:
                     print("")

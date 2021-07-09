@@ -2,6 +2,7 @@
 from queue import Queue
 from datetime import timedelta
 from HashMap import HashMap
+from time import sleep
 from Package import Package
 import sys
 import datetime
@@ -210,7 +211,7 @@ class Truck:
         return_time = None
         drive_distance = 0
         dont_ask_to_update_9 = False
-        #print(f"Departure:    {departure_time}")
+        # print(f"Departure:    {departure_time}")¥
 
         while (self.delivery_route.qsize() > 0):
             # next_delivery entries contain an array as folows:
@@ -241,12 +242,18 @@ class Truck:
             # Create a time object to see if we are able to update package #9
             ten_twenty_am = datetime.datetime(2021, 7, 1, 10, 20, 0, 0)
 
+            # Output progress to the user for them a visual
+            print(current_time.strftime("%H:%M:%S") + ": Truck" +
+                  self.id + " Delivering Package(s) to: '" + next_delivery[0] + "'")
+            sleep(0.05)
+
             # print(current_time)
             # Current time at or later than 10:20 triggers the ability to update Package #9's info
             # self.id == "1" is to only ask this when the first truck runs through the simulation
-            if (current_time >= ten_twenty_am and not package_9_has_been_updated and self.id == "2-2nd-trip" and not dont_ask_to_update_9):
+            if (current_time >= ten_twenty_am and not package_9_has_been_updated and self.id == "1_trip2" and not dont_ask_to_update_9):
+                print("")
                 print(
-                    f"\tDuring deliver, new information has come in about package #9!")
+                    f"\tDuring delivery, new information has come in about package #9!")
                 print(
                     f"\tWould you like to correct the address for package #9? Enter 'y' or 'n'")
                 answer = input(">")
@@ -264,6 +271,8 @@ class Truck:
                         "9", "Third District Juvenile Court", "410 S State St", "EOD", "Salt Lake City", "84111", "2", "IN TRANSIT"))
                     print(
                         f"\tPackage #9's address has been updated to: 410 S State St., Salt Lake City, UT 84111!")
+                    print("")
+                    sleep(1)
                     # The truck that is carrying Package #9 will have it's Map re-balanced/re-optimized
                     package_9_has_been_updated = True
                     # Fix package 9
@@ -272,6 +281,7 @@ class Truck:
                     package_handler.packages_hash_table.add("9", Package(
                         "9", "Council Hall", "300 State St", "EOD", "Salt Lake City", "84103", "2", "Wrong address listed"))
                     dont_ask_to_update_9 = True
+                    print("")
 
             # Record historical data for playbck
             for pack in current_packages:

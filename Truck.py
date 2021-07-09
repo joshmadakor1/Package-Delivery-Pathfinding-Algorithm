@@ -243,8 +243,12 @@ class Truck:
             ten_twenty_am = datetime.datetime(2021, 7, 1, 10, 20, 0, 0)
 
             # Output progress to the user for them a visual
-            print(current_time.strftime("%H:%M:%S") + ": Truck" +
-                  self.id + " Delivering Package(s) to: '" + next_delivery[0] + "'")
+            if (next_delivery[0] == 'Western Governors University'):
+                print(current_time.strftime("%H:%M:%S") + ": Truck" +
+                      self.id + " Returning to: '" + next_delivery[0] + "'\n")
+            else:
+                print(current_time.strftime("%H:%M:%S") + ": Truck" + self.id +
+                      " Delivering Package(s) to: '" + next_delivery[0] + "'")
             sleep(0.05)
 
             # print(current_time)

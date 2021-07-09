@@ -17,7 +17,7 @@ import datetime
         __init__ is used to initialize the class properties
 ************************************************************************************************       
         __init__
-        METHOD COMPLEXITY: O(6) -> O(1)
+        METHOD TIME COMPLEXITY: O(6) -> O(1)
             INITIALIZE TRUCK SPEED:   O(1)
             INITIALIZE TRUCK ID:      O(1)
             INITIALIZE PACKAGES:      O(1)
@@ -80,17 +80,15 @@ import datetime
         deliver_packages
         METHOD COMPLEXITY: O(N*N) -> O(N^2)
         WHILE THERE ARE STILL PACKAGES ON BOARD, KEEP DELVIERING: O(N)
-        RECORD TIME-BASED SNAPSHOT OF ALL PACKAGES, PER DELIVERY: O(N^2) 
-
-                                                                      
-
-        
+        RECORD TIME-BASED SNAPSHOT OF ALL PACKAGES, PER DELIVERY: O(N^2)     
 '''
 
 
 class Truck:
 
     # Time-complexity: O(6) -> O(1)
+    # Space-complexity: O(1)
+    #
     # Default constructor
     def __init__(self, id):
         self.SPEED_MPH = 18
@@ -103,18 +101,23 @@ class Truck:
         self.package_count = 0
 
     # Time-complexity: O(1)
+    # Space-complexity: O(1)
+    #
     # This method returns a string with the truck's
     #   ID and remaining package count
     def __str__(self):
         return f"Truck{self.id} has {self.package_count} packages remaining."
 
     # Time-complexity: O(1)
-    # This method returns the truck's packages
+    # Space-complexity: O(1)
     #
+    # This method returns the truck's packages
     def get_packages(self):
         return self.packages
 
     # Time-complexity: O(3) -> O(1)
+    # Space-complexity: O(1)
+    #
     # This method a a package to the truck,
     #   increments the package_count by 1, and adds
     #   a target delivery node
@@ -124,6 +127,8 @@ class Truck:
         self.delivery_nodes.add(package.address_name)
 
     # Time-complexity: O(3) -> O(1)
+    # Space-complexity: O(1)
+    #
     # This method removes a package from the truck,
     #   decrements the package_count by 1, and discards
     #   a target delivery node
@@ -132,12 +137,13 @@ class Truck:
         self.package_count -= 1
         self.delivery_nodes.discard(package.address_name)
 
-    # Time-complexity: O(n+n) = O(2n) -> O(n)
+    # Time-complexity: O(N*N) -> O(N^2)
+    # Space-complexity: O(N+N+1+1+1) -> O(2N+3) -> O(N)
+    #
     # Algorithm used to optimize a deliver route
     # Algorithm type: Nearest Neighbor Algorithm
     #
-    # @param start - starts from the home base, Western Governors University
-    # @param nodes_remaining - the delivery locations for the packages on the truck
+    # @param node_list - the delivery locations for the packages on the truck
     #
     # Starts from home base and makes deliveries in order, always going
     #   to the next closest node. Once all the packages have been delviered,
@@ -179,7 +185,9 @@ class Truck:
         self.delivery_route.put(next_node_for_delivery_route)
         return(total_distance)
 
-    # Time-complexity: O(n)
+    # Time-complexity: O(N)
+    # Space-complexity: O(N)
+    #
     # This function takes in the name of a delivery location and returns
     #   a list of packages that are destined for that location.
     #   This method is used to assist the trucks in their delivery route.
@@ -194,24 +202,26 @@ class Truck:
                     current_packages.append(candidate_package.id)
         return current_packages
 
-    # Time-complexity: O(n)
+    # Time-complexity: O(N)
+    # Space-complexity: O(N+N+1+1+1) -> O(2N+3) -> O(N)
+    #
     # This method "Delivers" packages
     # 1. The next delivery destination is popped off from the delivery queue
     # 2. Based on the next destination, the packages are selected
     # 3. Drive distance is incremented based off the distance to the next location
     # 4. Drive time is incremented based off the distance and truck speed
-    # 5. Current time (as of the deliver) is calculated
-    # 6. If it is past 10:20 am, the driver has the option of updating Package #9
+    # 5. Current time (as of the package is dropped off) is calculated
+    # 6. If it is past 10:20 am, the driver (the user) has the option of updating Package #9
     # 7. Historical delivery data is recorded for play-back later.
     # 8. Calculate the time the truck has returned to home base
-    # 9. Return the trucks delivery metrics:
+    # 9. Return the trucks delivery metrics in the form of an array with the following items:
     #   [return_time, drive_time_in_hours, drive_distance, package_9_has_been_updated]
     #
     def deliver_packages(self, departure_time, package_handler, package_status_over_time, package_9_has_been_updated):
         return_time = None
         drive_distance = 0
         dont_ask_to_update_9 = False
-        # print(f"Departure:    {departure_time}")¥
+        # print(f"Departure:    {departure_time}")
 
         while (self.delivery_route.qsize() > 0):
             # next_delivery entries contain an array as folows:

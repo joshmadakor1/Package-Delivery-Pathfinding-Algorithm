@@ -55,9 +55,9 @@ class PackageHandler:
         for entry in raw_package_data:
             if len(entry) > 1:
                 self.insert(Package(id=entry[0], address_name=location_address_to_names.get(entry[1]), delivery_address=entry[1], deadline=entry[5],
-                                    delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status=entry[7]))
+                                    delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status="AT THE HUB"))
                 self.packages_hash_table.add(entry[0], Package(id=entry[0], address_name=location_address_to_names.get(entry[1]), delivery_address=entry[1], deadline=entry[5],
-                                                               delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status=entry[7]))
+                                                               delivery_city=entry[2], delivery_zip=entry[4], weight=entry[6], status="AT THE HUB"))
 
     # Time complexity: O(1)
     # This method returns a package based on its ID

@@ -20,10 +20,10 @@ class Package:
     # Returns information about the package. If the package has not been delivered,
     #   returnt he status as "IN TRANSIT"
     def __str__(self):
-        if "DELIVERED" not in self.status:
-            return f"{self.id}, {self.status}IN TRANSIT, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}"
-        else:
-            return f"{self.id}, {self.status}, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}"
+        # if "DELIVERED" not in self.status:
+        #    return f"{self.id}, {self.status}IN TRANSIT, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}"
+        # else:
+        return f"{self.id}, {self.status}, {self.address_name}, {self.delivery_address}, {self.deadline}, {self.delivery_city}, {self.delivery_zip}, {self.weight}"
 
     # Time-complexity: O(5) -> O(1)
     # Updates a package based on supplied parameters

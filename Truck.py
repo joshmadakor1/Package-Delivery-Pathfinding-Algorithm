@@ -2,7 +2,7 @@
 from queue import Queue
 from datetime import timedelta
 from HashMap import HashMap
-from time import sleep
+from time import sleep  # TODO: Add the sleeps back in for effect
 from Package import Package
 import sys
 import datetime
@@ -259,7 +259,7 @@ class Truck:
             else:
                 print(current_time.strftime("%H:%M:%S") + ": Truck" + self.id +
                       " Delivering Package(s) to: '" + next_delivery[0] + "'")
-            sleep(0.05)
+            # sleep(0.05)
 
             # print(current_time)
             # Current time at or later than 10:20 triggers the ability to update Package #9's info
@@ -286,7 +286,7 @@ class Truck:
                     print(
                         f"\tPackage #9's address has been updated to: 410 S State St., Salt Lake City, UT 84111!")
                     print("")
-                    sleep(1)
+                    # sleep(1)
                     # The truck that is carrying Package #9 will have it's Map re-balanced/re-optimized
                     package_9_has_been_updated = True
                     # Fix package 9

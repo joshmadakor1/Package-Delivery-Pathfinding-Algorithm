@@ -6,6 +6,7 @@ from datetime import timedelta
 from operator import itemgetter
 from queue import Queue
 import datetime
+import time
 
 
 # Used for storing package status over time
@@ -282,11 +283,6 @@ while (user_input != "q"):
                         package_status_over_time, key=itemgetter(0))
                     print("")
                     print(
-                        "\tFor up to what time would you like to view package information?")
-                    print(
-                        "\tType the number next to the time period and press [Enter].")
-                    print("")
-                    print(
                         f"\t 0 - {package_status_over_time[0][0]}\t 1 - {package_status_over_time[1][0]}\t 2 - {package_status_over_time[2][0]}\t 3 - {package_status_over_time[3][0]}")
                     print(
                         f"\t 4 - {package_status_over_time[4][0]}\t 5 - {package_status_over_time[5][0]}\t 6 - {package_status_over_time[6][0]}\t 7 - {package_status_over_time[7][0]}")
@@ -307,7 +303,53 @@ while (user_input != "q"):
                     print(
                         f"\t36 - {package_status_over_time[36][0]}\t37 - {package_status_over_time[37][0]}\t38 - {package_status_over_time[38][0]}\t39 - {package_status_over_time[39][0]} (and later)")
                     print("")
+                    print(
+                        "\tFor up to what time would you like to view package information?")
+                    print("")
+                    print(
+                        "\tType the number next to the time period and press [Enter].    For Example: >14")
+                    print(
+                        "\tAlternatively, you may manually enter an exact time.          For example: >9:05")
+                    print("")
                     user_input = input(">").lower()
+
+                    while True:
+                        if user_input.isnumeric():
+                            break
+                        if ":" in user_input:
+                            try:
+                                if (time.strptime(user_input, "%H:%M")):
+
+                                    # Time selected by the user
+                                    chosen_time = time.strptime(
+                                        user_input, "%H:%M")
+
+                                    # The time to pick from historical data
+                                    target_time = ""
+
+                                    # The time in historical data currently being iterated
+                                    current_time = ""
+
+                                    # Used to select a time period from the historical data
+                                    chosen_index = 0
+
+                                    print(chosen_time)
+                                    count = 0
+                                    for i in package_status_over_time:
+                                        print(i[0])
+                                        current_time = time.strptime(
+                                            i[0], "%H:%M:%S")
+                                        if (chosen_time > current_time):
+                                            target_time = current_time
+                                            chosen_index = count
+                                        count = count + 1
+                                    user_input = str(chosen_index)
+                                    break
+                            except ValueError:
+                                break
+
+                        else:
+                            break
 
                 if (user_input.isnumeric() and int(user_input) >= 0 and int(user_input) <= 39):
                     print("")
@@ -364,7 +406,7 @@ while (user_input != "q"):
                             if str(j) not in delivered_packages:
                                 package = package_handler.get_package_by_id(
                                     str(j))
-                                package.set_status("")
+                                # package.set_status("")
                                 final_package_status.put(package)
                             else:
                                 package = package_handler.get_package_by_id(

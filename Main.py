@@ -7,6 +7,7 @@ from operator import itemgetter
 from queue import Queue
 import datetime
 import time
+import collections
 
 
 # Used for storing package status over time
@@ -177,8 +178,7 @@ def delivery_simulation(package_status_over_time):
     # Sort package_status_over_time by time delivered. This will be used to see the status
     # throughout the delivery lifecycle
     # Sort the packages by time delivered
-    package_status_over_time = sorted(
-        package_status_over_time, key=itemgetter(0))
+    #package_status_over_time = sorted(package_status_over_time, key=itemgetter(0))
 
     # I don't know how to manipulate time in python and I'm lazy.
     # The following code finds the time difference between when the first
@@ -277,65 +277,33 @@ while (user_input != "q"):
             print("")
             user_input = input(">").lower()
 
+            selected_time = None
             if (user_input == "p"):
-                while (not user_input.isnumeric()):
+                while (selected_time == None):
 
                     print("")
-                    print("")
-                    print(
-                        "\tFor up to what time would you like to view package information?")
-                    print("")
-                    print(
-                        "\tType the number next to the time period and press [Enter].    For Example: >14")
-                    print(
-                        "\tAlternatively, you may manually enter an exact time.          For example: >9:05")
-                    print("")
-                    user_input = input(">").lower()
-
                     while True:
-                        if user_input.isnumeric():
-                            break
-                        if ":" in user_input:
-                            try:
-                                if (time.strptime(user_input, "%H:%M")):
+                        print(
+                            "\tEnter a point in time for which you want to view package information. For Example: 13:05")
+                        print("")
+                        selected_time = input(">").lower()
+                        try:
+                            if (time.strptime(selected_time, "%H:%M")):
 
-                                    # Time selected by the user
-                                    chosen_time = time.strptime(
-                                        user_input, "%H:%M")
+                                # Time selected by the user
+                                selected_time = time.strptime(
+                                    selected_time, "%H:%M")
 
-                                    # The time to pick from historical data
-                                    target_time = ""
-
-                                    # The time in historical data currently being iterated
-                                    current_time = ""
-
-                                    # Used to select a time period from the historical data
-                                    chosen_index = 0
-
-                                    print(chosen_time)
-                                    count = 0
-                                    for i in package_status_over_time:
-                                        print(i[0])
-                                        current_time = time.strptime(
-                                            i[0], "%H:%M:%S")
-                                        if (chosen_time > current_time):
-                                            target_time = current_time
-                                            chosen_index = count
-                                        count = count + 1
-                                    user_input = str(chosen_index)
-                                    break
-                            except ValueError:
                                 break
+                        except ValueError:
+                            print("\tInvalid time entered.")
+                            continue
 
-                        else:
-                            break
-
-                if (user_input.isnumeric() and int(user_input) >= 0 and int(user_input) <= 39):
                     print("")
                     print("\tHow would you like to query packages?")
                     print("")
                     print(
-                        f"\ta - Show ALL package statuses as of {package_status_over_time[int(user_input)][0]}")
+                        f'\ta - Show ALL package statuses as of {time.strftime("%H:%M", selected_time)}')
                     print("\ti - Lookup by package ID")
                     print("\tr - Lookup by package ADDRESS")
                     print("\td - Lookup by package DEADLINE")
@@ -366,39 +334,42 @@ while (user_input != "q"):
                     # If the user wants to return ALL packages
                     if (query_type == "a"):
                         # Set that will hold packages that have been delievered up to the given time
-                        delivered_packages = set()
+                        filtered_packages = dict()
 
-                        # A queue that will hold all the packages to be printed to the screen
-                        final_package_status = Queue()
+                        for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
+                            if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
+                                delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
+                                package_handler.get_package_by_id(str(package_id)).set_status(
+                                    'DELIVERED (' + delivered_time + ')')
+                                filtered_packages[int(package_id)] = package_handler.get_package_by_id(
+                                    str(package_id))
 
-                        # Step through the delivery history, grabbing entries up until the specified time
-                        # and placing them into the delivered_packages set
-                        for i in range(0, int(user_input) + 1):
-                            delivered_packages.add((package_status_over_time[i][1])[
-                                                   0:(package_status_over_time[i][1]).index(",")])
+                            elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('EN ROUTE')
+                                filtered_packages[int(package_id)] = package_handler.get_package_by_id(
+                                    str(package_id))
 
-                        # Get the package IDs of those packages that were not delivered (from above)
-                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
-                        # Setting the status to an emptry string will default them to IN TRANSIT,
-                        # Otherwise, add the package as-is
-                        for j in range(1, 41):
-                            if str(j) not in delivered_packages:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                # package.set_status("")
-                                final_package_status.put(package)
+                            elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('AT THE HUB')
+                                filtered_packages[int(package_id)] = package_handler.get_package_by_id(
+                                    str(package_id))
+
                             else:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                final_package_status.put(package)
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('AT THE HUB')
+                                filtered_packages[int(package_id)] = package_handler.get_package_by_id(
+                                    str(package_id))
+
                         print("")
                         print(
-                            f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]}")
+                            f'\tAll Package Statuses as of {time.strftime("%H:%M", selected_time)}')
                         print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user
-                        while(final_package_status.qsize() > 0):
-                            print(f"\t{final_package_status.get()}")
+                        for key in filtered_packages:
+                            print(filtered_packages[key])
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -790,9 +761,9 @@ while (user_input != "q"):
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
 
-                elif(user_input == "b"):
-                    # Setting the user_input to an empty strill will restart the program
-                    user_input = ""
-                else:
-                    print("")
-                    print("\tInvalid input. What would you like to do next?")
+                # elif(user_input == "b"):
+                #    # Setting the user_input to an empty strill will restart the program
+                #    user_input = ""
+                # else:
+                #    print("")
+                #   print("\tInvalid input. What would you like to do next?")

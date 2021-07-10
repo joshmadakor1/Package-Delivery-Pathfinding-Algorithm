@@ -242,7 +242,31 @@ class Truck:
         # for i in range(0, 40):
         #    print(self.packages.get(str(i)))
 
+        # if the "Delivered" set doesn't exist in the dictionary, add it
+        if ("DELIVERED" not in package_status_over_time):
+            package_status_over_time["DELIVERED"] = set()
+
+        # Used to store the time packages get delivered
+        if ("DELIVERED_TIMES" not in package_status_over_time):
+            package_status_over_time["DELIVERED_TIMES"] = dict()
+
+        # Used to store the time packages begin getting transported
+        if ("IN_TRANSIT_BEGIN" not in package_status_over_time):
+            package_status_over_time["IN_TRANSIT_BEGIN"] = dict()
+
+        # used to store the time packages hub departure time
+        if ("HUB_DEPARTURE" not in package_status_over_time):
+            package_status_over_time["HUB_DEPARTURE"] = dict()
+
+        for i in range(1, 41):
+            temp_package = self.packages.get(str(i))
+            if (temp_package != None):
+                package_status_over_time["HUB_DEPARTURE"][int(
+                    temp_package.get_id())] = departure_time.strftime("%H:%M:%S")
+        # in_transit_begin is used for the time when packages became "in transit"
+        in_transit_begin = departure_time.strftime("%H:%M:%S")
         while (self.delivery_route.qsize() > 0):
+
             # next_delivery entries contain an array as folows:
             # next_delivery[0] = 'Western Governors University'
             # next_delivery[1] = '10.9'
@@ -319,7 +343,6 @@ class Truck:
             all_packages_on_board = self.get_all_packages_on_board()
             # Record historical data for playbck
 
-            print(package_status_over_time)
             if (package_status_over_time == None):
                 package_status_over_time = dict()
             for pack in current_packages:
@@ -330,42 +353,58 @@ class Truck:
                     package_status_over_time[time_readable] = dict()
                 temp_package = self.packages.get(pack)
 
-                # Set status of the delivered package
+                # Set status of the delivered package and record the "delivered" times
                 temp_package.set_status("DELIVERED")
+                package_status_over_time["DELIVERED_TIMES"][int(
+                    temp_package.get_id())] = time_readable
+
+                # record when the package became "in transit"
+                package_status_over_time["IN_TRANSIT_BEGIN"][int(
+                    temp_package.get_id())] = in_transit_begin
 
                 # Update the package as delivered
                 self.packages.add(pack, temp_package)
 
                 # Add the package to package_status_over_time
                 package_key = str(temp_package.get_id())
-                package_status_over_time[time_readable][package_key] = copy.deepcopy(temp_package)
+                package_status_over_time[time_readable][package_key] = copy.deepcopy(
+                    temp_package)
 
-            # for the other packages on board, that aren't currently being delivered
-            # Set their status to IN TRANSIT if they haven't already been delivered
-            for i in range(1, 41):
-                temp_package = self.packages.get(str(i))
                 if (str(i) not in current_packages and temp_package != None and temp_package.get_status() != "DELIVERED"):
 
                     # If the package is not part of the currently being delivered packages
                     #   and it is on the truck, and it has not been delivered yet, set the
                     #   status to "IN TRANSIT"
                     temp_package.set_status("IN TRANSIT")
-                    package_status_over_time[time_readable][temp_package.get_id()] = copy.deepcopy(temp_package)
+                    package_status_over_time[time_readable][temp_package.get_id()] = copy.deepcopy(
+                        temp_package)
+                    package_status_over_time["DELIVERED_TIMES"][int(temp_package.get_id(
+                    ))] = time_readable
 
-                # If the package has already been delivered, update the the historical data
-                elif (temp_package != None and temp_package.get_status() == "DELIVERED"):
+                # If the package has already been delivered (alreadyexists in the delivered set) update the the historical data
+                elif (temp_package != None and (temp_package.get_status() == "DELIVERED" or str(temp_package.get_id()) in package_status_over_time["DELIVERED"])):
 
-                    package_status_over_time[time_readable][temp_package.get_id()] = copy.deepcopy(temp_package)
+                    package_status_over_time[time_readable][temp_package.get_id()] = copy.deepcopy(
+                        temp_package)
+
+                    # Add package ID to "Already delivered" set
+                    package_status_over_time["DELIVERED"].add(
+                        temp_package.get_id())
 
                 # if the package exists, but is
                 elif (temp_package != None and temp_package.get_status() != "DELIVERED" and temp_package.get_status() != "IN TRANSIT"):
                     print("In the hub? " + temp_package.get_id)
 
-                # Somehow backfill historical data
-            # for _pack in self.packages:
-            #    if (_pack not in current_packages):
-            #        print("hi")
-                # Calculate the return time. This will be used to display metrics later
+            # For every other past package, update the statuses accordingly
+            for i in range(1, 41):
+                temp_package = package_handler.packages_hash_table.get(str(i))
+
+                # For every other past package, update the delivery status to "Delivered" if it has already been delivered
+                if (i in package_status_over_time["DELIVERED"]):
+                    package_status_over_time[time_readable][temp_package.get_id()] = copy.deepcopy(
+                        temp_package)
+            in_transit_begin = time_readable
+
         return_time = departure_time + timedelta(hours=drive_time_in_hours)
 
         return([return_time, drive_time_in_hours, drive_distance, package_9_has_been_updated])

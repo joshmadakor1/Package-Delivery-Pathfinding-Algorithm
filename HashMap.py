@@ -9,7 +9,7 @@ class HashMap:
     # Calculates the array index where the item will stored
     def calculate_hash_index(self, input):
         pre_mod_hash = 0
-
+        input = str(input)
         # Very basic hashing function; sum up the ASCII/Decimal value of the input.
         for c in input:
             pre_mod_hash += ord(c)

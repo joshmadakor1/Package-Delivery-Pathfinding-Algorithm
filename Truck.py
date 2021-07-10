@@ -6,16 +6,17 @@ from time import sleep  # TODO: Add the sleeps back in for effect
 from Package import Package
 import sys
 import datetime
+import copy
 
 '''
 ************************************************************************************************
                             Truck Class Pseudocode with BIG-O Analysis
 ************************************************************************************************
-        
+
 
 
         __init__ is used to initialize the class properties
-************************************************************************************************       
+************************************************************************************************
         __init__
         METHOD TIME COMPLEXITY: O(6) -> O(1)
             INITIALIZE TRUCK SPEED:   O(1)
@@ -24,10 +25,10 @@ import datetime
             INITIALIZE DEL. NODES:    O(1)
             INITIALIZE TRUCK ROUTE:   O(1)
             INITIALIZE PACKAGE COUNT: O(1)
-        
+
 
         add_package adds packages to the trucks current load and adds loc. to list
-************************************************************************************************* 
+*************************************************************************************************
         add_package
         METHOD COMPLEXITY: O(3) -> O(1)
             ADD PACKAGES TO HASHMAP:               O(1)
@@ -37,7 +38,7 @@ import datetime
 
         remove_package removes packages from the trucks current load, decrements the package
         count, as well as removes the location from the list
-************************************************************************************************* 
+*************************************************************************************************
         remove_package
         METHOD COMPLEXITY: O(3) -> O(1)
             REMOVE PACKAGE FROM HASHMAP:     O(1)
@@ -45,12 +46,12 @@ import datetime
             REMOVE THE PACKAGE DEL. NODES:   O(1)
 
 
-        optimize_delivery_route 
+        optimize_delivery_route
         Algorithm used to optimize a deliver route
         Algorithm type: Nearest Neighbor Algorithm
             Starts from home base and calculates the next delivery based on the distance
             (weight) to the next node.
-************************************************************************************************* 
+*************************************************************************************************
         optimize_delivery_route
         METHOD COMPLEXITY: O(5 + 2N + N^2) -> O(N^2)
             SET THE HOME BASE NODE:                  O(1)
@@ -66,7 +67,7 @@ import datetime
         get_packages_currently_being_delivered returns a list of packages that are to be
         delivered next. These packages are ultimately stored in package_status_over_time in
         order view package delivery status and different time periods
-************************************************************************************************* 
+*************************************************************************************************
         get_packages_currently_being_delivered
         METHOD COMPLEXITY: O(N + 1) -> O(N)
             CHECK EACH PACKAGE AND FIND NEXT DELIVERY: O(N)
@@ -76,11 +77,11 @@ import datetime
         deliver_packages loops though the packages currently on the truck and delivers them.
         This method also takes time snapshots of all the package at each delivery point.
         This data is later used to look up delivery status over time.
-************************************************************************************************* 
+*************************************************************************************************
         deliver_packages
         METHOD COMPLEXITY: O(N*N) -> O(N^2)
         WHILE THERE ARE STILL PACKAGES ON BOARD, KEEP DELVIERING: O(N)
-        RECORD TIME-BASED SNAPSHOT OF ALL PACKAGES, PER DELIVERY: O(N^2)     
+        RECORD TIME-BASED SNAPSHOT OF ALL PACKAGES, PER DELIVERY: O(N^2)
 '''
 
 
@@ -203,6 +204,22 @@ class Truck:
         return current_packages
 
     # Time-complexity: O(N)
+    # Space-complexity: O(N)
+    #
+    # This function takes in the name of a delivery location and returns
+    #   a list of packages that are destined for that location.
+    #   This method is used to assist the trucks in their delivery route.
+    #
+    def get_all_packages_on_board(self):
+        all_packages = list()
+        # 40 total packages to check
+        for i in range(1, 41):
+            candidate_package = self.packages.get(str(i))
+            if candidate_package != None:
+                all_packages.append(candidate_package.id)
+        return all_packages
+
+    # Time-complexity: O(N)
     # Space-complexity: O(N+N+1+1+1) -> O(2N+3) -> O(N)
     #
     # This method "Delivers" packages
@@ -222,6 +239,8 @@ class Truck:
         drive_distance = 0
         dont_ask_to_update_9 = False
         # print(f"Departure:    {departure_time}")
+        # for i in range(0, 40):
+        #    print(self.packages.get(str(i)))
 
         while (self.delivery_route.qsize() > 0):
             # next_delivery entries contain an array as folows:
@@ -297,20 +316,56 @@ class Truck:
                     dont_ask_to_update_9 = True
                     print("")
 
+            all_packages_on_board = self.get_all_packages_on_board()
             # Record historical data for playbck
+
+            print(package_status_over_time)
+            if (package_status_over_time == None):
+                package_status_over_time = dict()
             for pack in current_packages:
-                temp_package = self.packages.get(pack)
                 time_readable = current_time.strftime("%H:%M:%S")
-                # print(time_readable)
-                temp_package.set_status(f"DELIVERED ({time_readable})")
+
+                # If this is first iteration, create a nested dictionary within the time key
+                if (not time_readable in package_status_over_time):
+                    package_status_over_time[time_readable] = dict()
+                temp_package = self.packages.get(pack)
+
+                # Set status of the delivered package
+                temp_package.set_status("DELIVERED")
+
+                # Update the package as delivered
                 self.packages.add(pack, temp_package)
-                package_handler.packages_hash_table.add(pack, temp_package)
-                package_status_over_time.append([
-                    current_time.strftime("%H:%M:%S"), str(package_handler.get_package_by_id(pack))])
 
-                # print(temp_package)
+                # Add the package to package_status_over_time
+                package_key = str(temp_package.get_id())
+                package_status_over_time[time_readable][package_key] = copy.deepcopy(temp_package)
 
-        # Calculate the return time. This will be used to display metrics later
+            # for the other packages on board, that aren't currently being delivered
+            # Set their status to IN TRANSIT if they haven't already been delivered
+            for i in range(1, 41):
+                temp_package = self.packages.get(str(i))
+                if (str(i) not in current_packages and temp_package != None and temp_package.get_status() != "DELIVERED"):
+
+                    # If the package is not part of the currently being delivered packages
+                    #   and it is on the truck, and it has not been delivered yet, set the
+                    #   status to "IN TRANSIT"
+                    temp_package.set_status("IN TRANSIT")
+                    package_status_over_time[time_readable][temp_package.get_id()] = copy.deepcopy(temp_package)
+
+                # If the package has already been delivered, update the the historical data
+                elif (temp_package != None and temp_package.get_status() == "DELIVERED"):
+
+                    package_status_over_time[time_readable][temp_package.get_id()] = copy.deepcopy(temp_package)
+
+                # if the package exists, but is
+                elif (temp_package != None and temp_package.get_status() != "DELIVERED" and temp_package.get_status() != "IN TRANSIT"):
+                    print("In the hub? " + temp_package.get_id)
+
+                # Somehow backfill historical data
+            # for _pack in self.packages:
+            #    if (_pack not in current_packages):
+            #        print("hi")
+                # Calculate the return time. This will be used to display metrics later
         return_time = departure_time + timedelta(hours=drive_time_in_hours)
 
         return([return_time, drive_time_in_hours, drive_distance, package_9_has_been_updated])

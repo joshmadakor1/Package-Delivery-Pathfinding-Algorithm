@@ -43,3 +43,8 @@ class Package:
     # Returns the status of a package
     def get_status(self):
         return self.status
+
+    # Time-complexity: O(1)
+    # Returns the id of a package
+    def get_id(self):
+        return self.id

@@ -5,6 +5,7 @@ from Truck import Truck
 from datetime import timedelta
 from operator import itemgetter
 from queue import Queue
+from time import sleep
 from COLORS import COLORS
 import datetime
 import time
@@ -198,7 +199,8 @@ def delivery_simulation(package_status_over_time):
 
     total_miles_driven = truck1_return_metrics[2] + \
         truck1_trip2_return_metrics[2] + truck2_return_metrics[2]
-    print("")
+    print(COLORS.OKCYAN + "\tDelivery complete for all trucks!" + COLORS.TERMINATE)
+    sleep(1)
     print("")
     print("\tTruck1 metrics:")
     print("\t-----------------------------------")
@@ -209,6 +211,7 @@ def delivery_simulation(package_status_over_time):
     print(
         f"\tTotal Distance: {round(float(truck1_return_metrics[2]),2)} miles")
     print("")
+    sleep(1)
     print("\tTruck1 (Second Trip) metrics:")
     print("\t-----------------------------------")
     print(f"\tDeparture Time: {truck1_return_metrics[0]}")
@@ -218,6 +221,7 @@ def delivery_simulation(package_status_over_time):
     print(
         f"\tTotal Distance: {round(float(truck1_trip2_return_metrics[2]),2)} miles")
     print(f"")
+    sleep(1)
     print("\tTruck2 metrics:")
     print("\t-----------------------------------")
     print(f"\tDeparture Time: {ten_twenty}")
@@ -227,11 +231,12 @@ def delivery_simulation(package_status_over_time):
     print(
         f"\tTotal Distance: {round(float(truck2_return_metrics[2]),2)} miles")
     print(f"")
+    sleep(1)
     print(f"")
     print(COLORS.GREEN +
-          f"\tCombined mileage all trucks:  {round(float(total_miles_driven),2)} miles" + COLORS.TERMINATE)
+          f"\tCombined mileage for all trucks:  {round(float(total_miles_driven),2)} miles" + COLORS.TERMINATE)
     print(COLORS.GREEN +
-          f"\tTime to deliver all packages: ({hours}) hours and ({minutes}) minutes" + COLORS.TERMINATE)
+          f"\tTime to deliver all packages:     ({hours}) hours and ({minutes}) minutes" + COLORS.TERMINATE)
     initialize_graph()
     initialize_truck1()
     initialize_truck1_trip2()
@@ -268,8 +273,6 @@ while (user_input != "q"):
         print("")
         delivery_simulation(package_status_over_time)
         print("")
-        print(COLORS.OKCYAN + "\tDelivery simulation complete." + COLORS.TERMINATE)
-
         while (user_input != "p" and user_input != "b"):
             print(COLORS.OKCYAN + "\tWhat would you like to do next?" + COLORS.TERMINATE)
             print("")

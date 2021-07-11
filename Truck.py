@@ -298,12 +298,12 @@ class Truck:
 
             # Output progress to the user for them a visual
             if (next_delivery[0] == 'Western Governors University'):
-                print(current_time.strftime("%H:%M:%S") + ": Truck" +
+                print("\t" + current_time.strftime("%H:%M:%S") + ": Truck" +
                       self.id + " Returning to: '" + next_delivery[0] + "'\n")
             else:
-                print(current_time.strftime("%H:%M:%S") + ": Truck" + self.id +
+                print("\t" + current_time.strftime("%H:%M:%S") + ": Truck" + self.id +
                       " Delivering Package(s) to: '" + next_delivery[0] + "'")
-            # sleep(0.05)
+            sleep(0.05)
 
             # print(current_time)
             # Current time at or later than 10:20 triggers the ability to update Package #9's info
@@ -332,7 +332,7 @@ class Truck:
                     print(COLORS.GREEN +
                           f"\tPackage #9's address has been updated to: 410 S State St., Salt Lake City, UT 84111!" + COLORS.TERMINATE)
                     print("")
-                    # sleep(1)
+                    sleep(1)
                     # The truck that is carrying Package #9 will have it's Map re-balanced/re-optimized
                     package_9_has_been_updated = True
                     # Fix package 9

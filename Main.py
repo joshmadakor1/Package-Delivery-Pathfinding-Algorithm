@@ -346,19 +346,19 @@ while (user_input != "q"):
 
                             elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
                                 package_handler.get_package_by_id(
-                                    str(package_id)).set_status('EN ROUTE')
+                                    str(package_id)).set_status('EN ROUTE (' + time.strftime("%H:%M:%S", selected_time) + ')')
                                 filtered_packages[int(package_id)] = package_handler.get_package_by_id(
                                     str(package_id))
 
                             elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
                                 package_handler.get_package_by_id(
-                                    str(package_id)).set_status('AT THE HUB')
+                                    str(package_id)).set_status('AT THE HUB (' + time.strftime("%H:%M:%S", selected_time) + ')')
                                 filtered_packages[int(package_id)] = package_handler.get_package_by_id(
                                     str(package_id))
 
                         print("")
                         print(
-                            f'\tAll Package Statuses as of {time.strftime("%H:%M", selected_time)}')
+                            f'\tAll Package Statuses as of {time.strftime("%H:%M:%S", selected_time)}')
                         print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user

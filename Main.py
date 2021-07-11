@@ -5,6 +5,7 @@ from Truck import Truck
 from datetime import timedelta
 from operator import itemgetter
 from queue import Queue
+from COLORS import COLORS
 import datetime
 import time
 import collections
@@ -227,10 +228,10 @@ def delivery_simulation(package_status_over_time):
         f"\tTotal Distance: {round(float(truck2_return_metrics[2]),2)} miles")
     print(f"")
     print(f"")
-    print(
-        f"\tCombined mileage all trucks:  {round(float(total_miles_driven),2)} miles")
-    print(
-        f"\tTime to deliver all packages: ({hours}) hours and ({minutes}) minutes")
+    print(COLORS.GREEN +
+          f"\tCombined mileage all trucks:  {round(float(total_miles_driven),2)} miles" + COLORS.TERMINATE)
+    print(COLORS.GREEN +
+          f"\tTime to deliver all packages: ({hours}) hours and ({minutes}) minutes" + COLORS.TERMINATE)
     initialize_graph()
     initialize_truck1()
     initialize_truck1_trip2()
@@ -250,7 +251,8 @@ def delivery_simulation(package_status_over_time):
 user_input = ""
 while (user_input != "q"):
     print("")
-    print("\tWhat would you like to do?")
+
+    print(COLORS.OKCYAN + "\tWhat would you like to do?" + COLORS.TERMINATE)
     print("")
     print("\td - Begin Delivery Simulation and Package Information Lookup")
     print("\tq - Quit")
@@ -262,15 +264,14 @@ while (user_input != "q"):
 
     if (user_input == "d"):
         print("")
-        print("\tBeginning delivery simulation...")
+        print(COLORS.OKCYAN + "\tBeginning delivery simulation..." + COLORS.TERMINATE)
         print("")
         delivery_simulation(package_status_over_time)
         print("")
-        print("\tDelivery simulation complete.")
+        print(COLORS.OKCYAN + "\tDelivery simulation complete." + COLORS.TERMINATE)
 
         while (user_input != "p" and user_input != "b"):
-            print("")
-            print("\tWhat would you like to do next?")
+            print(COLORS.OKCYAN + "\tWhat would you like to do next?" + COLORS.TERMINATE)
             print("")
             print("\tp - Package Information Lookup")
             print("\tb - Back to Main Menu")
@@ -283,8 +284,8 @@ while (user_input != "q"):
 
                     print("")
                     while True:
-                        print(
-                            "\tEnter a point in time for which you want to view package information. For Example: 13:05")
+                        print(COLORS.OKCYAN +
+                              "\tEnter a point in time for which you want to view package information. For Example:" + COLORS.TERMINATE + COLORS.HEADER + " 13:05" + COLORS.TERMINATE)
                         print("")
                         selected_time = input(">").lower()
                         try:
@@ -296,11 +297,11 @@ while (user_input != "q"):
 
                                 break
                         except ValueError:
-                            print("\tInvalid time entered.")
+                            print(COLORS.RED + "\tInvalid time entered." + COLORS.TERMINATE)
                             continue
 
                     print("")
-                    print("\tHow would you like to query packages?")
+                    print(COLORS.OKCYAN + "\tHow would you like to query packages?" + COLORS.TERMINATE)
                     print("")
                     print(
                         f'\ta - Show ALL package statuses as of {time.strftime("%H:%M", selected_time)}')
@@ -315,9 +316,9 @@ while (user_input != "q"):
                     query_type = input(">")
 
                     while (query_type != "a" and query_type != "i" and query_type != "r" and query_type != "d" and query_type != "c" and query_type != "z" and query_type != "w" and query_type != "s"):
-                        print("\tinvalid input")
+                        print(COLORS.RED + "\tinvalid input" + COLORS.TERMINATE)
                         print("")
-                        print("\tHow would you like to query packages?")
+                        print(COLORS.OKCYAN + "\tHow would you like to query packages?" + COLORS.TERMINATE)
                         print("")
                         print(
                             f"\ta - Show ALL package statuses as of {package_status_over_time[int(user_input)][0]}")
@@ -339,20 +340,19 @@ while (user_input != "q"):
                         for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
                             if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
                                 delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
-                                package_handler.get_package_by_id(str(package_id)).set_status(
-                                    'DELIVERED (' + delivered_time + ')')
+                                package_handler.get_package_by_id(str(package_id)).set_status('DELIVERED (' + delivered_time + ')')
                                 filtered_packages[int(package_id)] = package_handler.get_package_by_id(
                                     str(package_id))
 
                             elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
                                 package_handler.get_package_by_id(
-                                    str(package_id)).set_status('EN ROUTE (' + time.strftime("%H:%M:%S", selected_time) + ')')
+                                    str(package_id)).set_status('EN ROUTE')
                                 filtered_packages[int(package_id)] = package_handler.get_package_by_id(
                                     str(package_id))
 
                             elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
                                 package_handler.get_package_by_id(
-                                    str(package_id)).set_status('AT THE HUB (' + time.strftime("%H:%M:%S", selected_time) + ')')
+                                    str(package_id)).set_status('AT THE HUB')
                                 filtered_packages[int(package_id)] = package_handler.get_package_by_id(
                                     str(package_id))
 
@@ -363,7 +363,12 @@ while (user_input != "q"):
 
                         # Print out all the packages with their statuses to the user
                         for key in filtered_packages:
-                            print("\t"+str(filtered_packages[key]))
+                            if ("DELIVERED" in str(filtered_packages[key])):
+                                print(COLORS.GREEN + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
+                            elif ("EN ROUTE" in str(filtered_packages[key])):
+                                print(COLORS.YELLOW + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
+                            elif ("AT THE HUB" in str(filtered_packages[key])):
+                                print(COLORS.RED + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -372,8 +377,8 @@ while (user_input != "q"):
                     elif (query_type == "i"):
 
                         print("")
-                        print(
-                            "\tEnter the Target Package ID. Example: 14")
+                        print(COLORS.OKCYAN +
+                              "\tEnter the Target Package ID. For Example:" + COLORS.TERMINATE + COLORS.HEADER + " 14" + COLORS.TERMINATE)
                         print("")
                         target_id = input(">")
                         print("")
@@ -404,9 +409,14 @@ while (user_input != "q"):
 
                         print("")
                         print(
-                            f'\tPackage with an ID of ({target_id})')
+                            f'\tPackage with an ID of ({target_id}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
                         print("\t---------------------------------")
-                        print("\t"+str(filtered_packages[int(target_id)]))
+                        if ("DELIVERED" in str(filtered_packages[int(target_id)])):
+                            print(COLORS.GREEN + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
+                        elif ("EN ROUTE" in str(filtered_packages[int(target_id)])):
+                            print(COLORS.YELLOW + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
+                        elif ("AT THE HUB" in str(filtered_packages[int(target_id)])):
+                            print(COLORS.RED + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -414,8 +424,8 @@ while (user_input != "q"):
                     # If the user wants to return a package matching an address
                     elif (query_type == "r"):
                         print("")
-                        print(
-                            "\tEnter the Target Package ADDRESS. Example: 4300 S 1300 E")
+                        print(COLORS.OKCYAN +
+                              "\tEnter the Target Package ADDRESS. For Example:" + COLORS.TERMINATE + COLORS.HEADER + " 4300 S 1300 E " + COLORS.TERMINATE + COLORS.OKCYAN + "(case sensitive, must be exact)" + COLORS.TERMINATE)
                         print("")
                         target_address = input(">")
                         print("")
@@ -446,7 +456,7 @@ while (user_input != "q"):
 
                         print("")
                         print(
-                            f'\tPackage with an Address of ({target_address})')
+                            f'\tPackage(s) with an Address of ({target_address}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
                         print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user
@@ -454,7 +464,12 @@ while (user_input != "q"):
                         filtered_packages = package_handler.get_packages_by_address(
                             target_address)
                         for package in filtered_packages:
-                            print("\t"+str(package))
+                            if ("DELIVERED" in str(package)):
+                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("EN ROUTE" in str(package)):
+                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("AT THE HUB" in str(package)):
+                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -462,52 +477,47 @@ while (user_input != "q"):
                     # If the user wants to return a package matching a deadline
                     elif (query_type == "d"):
                         print("")
-                        print(
-                            "\tEnter the Target Package DEADLINE. Example: 10:30 AM")
+                        print(COLORS.OKCYAN +
+                              "\tEnter the Target Package DEADLINE. For Example:" + COLORS.TERMINATE + COLORS.HEADER + " 10:30 AM " + COLORS.TERMINATE + COLORS.OKCYAN + "(case sensitive, must be exact)" + COLORS.TERMINATE)
                         print("")
                         target_deadline = input(">")
                         print("")
 
                         # Set that will hold packages that have been delievered up to the given time
-                        delivered_packages = set()
+                        filtered_packages = dict()
 
-                        # A queue that will hold all the packages to be printed to the screen
-                        final_package_status = list()
+                        for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
+                            if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
+                                delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
+                                package_handler.get_package_by_id(str(package_id)).set_status(
+                                    'DELIVERED (' + delivered_time + ')')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Step through the delivery history, grabbing entries up until the specified time
-                        # and placing them into the delivered_packages set
-                        for i in range(0, int(user_input) + 1):
-                            delivered_packages.add((package_status_over_time[i][1])[
-                                                   0:(package_status_over_time[i][1]).index(",")])
-                        for j in range(1, 41):
-                            if str(j) not in delivered_packages:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                package.set_status("")
-                                final_package_status.append(str(package))
-                            else:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                final_package_status.append(str(package))
+                            elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('EN ROUTE')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # A list to hold the deadlines grabbed from final_package_status
-                        packages_filtered_by_deadline = list()
+                            elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('AT THE HUB')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Add the packages who's status match the target status into the deadline list
-                        for package in final_package_status:
-                            if (package.split(",")[4].strip() == target_deadline):
-                                packages_filtered_by_deadline.append(package)
                         print("")
                         print(
-                            f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with DEADLINE [{target_deadline}]:")
-                        print("\t--------------------------------------------------")
+                            f'\tPackage(s) with a Deadline of ({target_deadline}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
+                        print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user
-                        if (len(packages_filtered_by_deadline) != 0):
-                            for pack in packages_filtered_by_deadline:
-                                print(f"\t{pack}")
-                        else:
-                            print("\tNo packages found with that criteria.")
+                        # target_address
+                        filtered_packages = package_handler.get_packages_by_deadline(target_deadline)
+                        for package in filtered_packages:
+                            if ("DELIVERED" in str(package)):
+                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("EN ROUTE" in str(package)):
+                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("AT THE HUB" in str(package)):
+                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -515,57 +525,47 @@ while (user_input != "q"):
                     # If the user wants to return a package matching a city
                     elif (query_type == "c"):
                         print("")
-                        print(
-                            "\tEnter the Target Package DELIVERY_CITY. Example: Salt Lake City")
+                        print(COLORS.OKCYAN +
+                              "\tEnter the Target Package DELIVERY_CITY. For Example:" + COLORS.TERMINATE + COLORS.HEADER + " Salt Lake City " + COLORS.TERMINATE + COLORS.OKCYAN + "(case sensitive, must be exact)" + COLORS.TERMINATE)
                         print("")
                         target_city = input(">")
                         print("")
 
                         # Set that will hold packages that have been delievered up to the given time
-                        delivered_packages = set()
+                        filtered_packages = dict()
 
-                        # A queue that will hold all the packages to be printed to the screen
-                        final_package_status = list()
+                        for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
+                            if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
+                                delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
+                                package_handler.get_package_by_id(str(package_id)).set_status(
+                                    'DELIVERED (' + delivered_time + ')')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Step through the delivery history, grabbing entries up until the specified time
-                        # and placing them into the delivered_packages set
-                        for i in range(0, int(user_input) + 1):
-                            delivered_packages.add((package_status_over_time[i][1])[
-                                                   0:(package_status_over_time[i][1]).index(",")])
+                            elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('EN ROUTE')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Get the package IDs of those packages that were not delivered (from above)
-                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
-                        # Setting the status to an emptry string will default them to IN TRANSIT,
-                        # Otherwise, add the package as-is
-                        for j in range(1, 41):
-                            if str(j) not in delivered_packages:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                package.set_status("")
-                                final_package_status.append(str(package))
-                            else:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                final_package_status.append(str(package))
+                            elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('AT THE HUB')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        packages_filtered_by_city = list()
-
-                        # Step through the packages and grab only the ones where the city matches
-                        # the user input
-                        for package in final_package_status:
-                            if (package.split(",")[5].strip() == target_city):
-                                packages_filtered_by_city.append(package)
                         print("")
                         print(
-                            f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with DELIVERY_CITY [{target_city}]:")
-                        print("\t--------------------------------------------------")
+                            f'\tPackages with a destination City of ({target_city}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
+                        print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user
-                        if (len(packages_filtered_by_city) != 0):
-                            for pack in packages_filtered_by_city:
-                                print(f"\t{pack}")
-                        else:
-                            print("\tNo packages found with that criteria.")
+                        # target_address
+                        filtered_packages = package_handler.get_packages_by_city(target_city)
+                        for package in filtered_packages:
+                            if ("DELIVERED" in str(package)):
+                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("EN ROUTE" in str(package)):
+                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("AT THE HUB" in str(package)):
+                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -573,54 +573,47 @@ while (user_input != "q"):
                     # If the user wants to return a package matching a zip
                     elif (query_type == "z"):
                         print("")
-                        print(
-                            "\tEnter the Target Package DELIVERY_ZIP. Example: 84117")
+                        print(COLORS.OKCYAN +
+                              "\tEnter a target Zip Code. Example:" + COLORS.TERMINATE + COLORS.HEADER + " 84117" + COLORS.TERMINATE)
                         print("")
                         target_zip = input(">")
                         print("")
 
                         # Set that will hold packages that have been delievered up to the given time
-                        delivered_packages = set()
+                        filtered_packages = dict()
 
-                        # A queue that will hold all the packages to be printed to the screen
-                        final_package_status = list()
+                        for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
+                            if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
+                                delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
+                                package_handler.get_package_by_id(str(package_id)).set_status(
+                                    'DELIVERED (' + delivered_time + ')')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Step through the delivery history, grabbing entries up until the specified time
-                        # and placing them into the delivered_packages set
-                        for i in range(0, int(user_input) + 1):
-                            delivered_packages.add((package_status_over_time[i][1])[
-                                                   0:(package_status_over_time[i][1]).index(",")])
+                            elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('EN ROUTE')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Get the package IDs of those packages that were not delivered (from above)
-                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
-                        # Setting the status to an emptry string will default them to IN TRANSIT,
-                        # Otherwise, add the package as-is
-                        for j in range(1, 41):
-                            if str(j) not in delivered_packages:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                package.set_status("")
-                                final_package_status.append(str(package))
-                            else:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                final_package_status.append(str(package))
+                            elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('AT THE HUB')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        packages_filtered_by_zip = list()
-                        for package in final_package_status:
-                            if (package.split(",")[6].strip() == target_zip):
-                                packages_filtered_by_zip.append(package)
                         print("")
                         print(
-                            f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with DELIVERY_ZIP [{target_zip}]:")
-                        print("\t--------------------------------------------------")
+                            f'\tPackages with a destination Zip of ({target_zip}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
+                        print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user
-                        if (len(packages_filtered_by_zip) != 0):
-                            for pack in packages_filtered_by_zip:
-                                print(f"\t{pack}")
-                        else:
-                            print("\tNo packages found with that criteria.")
+                        # target_address
+                        filtered_packages = package_handler.get_packages_by_zip(target_zip)
+                        for package in filtered_packages:
+                            if ("DELIVERED" in str(package)):
+                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("EN ROUTE" in str(package)):
+                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("AT THE HUB" in str(package)):
+                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -628,56 +621,47 @@ while (user_input != "q"):
                     # If the user wants to return a package matching a certain weight
                     elif (query_type == "w"):
                         print("")
-                        print(
-                            "\tEnter the Target Package WEIGHT. Example: 7")
+                        print(COLORS.OKCYAN +
+                              "\tEnter the Target Package WEIGHT. Example:" + COLORS.TERMINATE + COLORS.HEADER + " 7" + COLORS.TERMINATE)
                         print("")
                         target_weight = input(">")
                         print("")
 
                         # Set that will hold packages that have been delievered up to the given time
-                        delivered_packages = set()
+                        filtered_packages = dict()
 
-                        # A queue that will hold all the packages to be printed to the screen
-                        final_package_status = list()
+                        for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
+                            if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
+                                delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
+                                package_handler.get_package_by_id(str(package_id)).set_status(
+                                    'DELIVERED (' + delivered_time + ')')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Step through the delivery history, grabbing entries up until the specified time
-                        # and placing them into the delivered_packages set
-                        for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
-                            delivered_packages.add((package_status_over_time[i][1])[
-                                                   0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+                            elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('EN ROUTE')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Get the package IDs of those packages that were not delivered (from above)
-                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
-                        # Setting the status to an emptry string will default them to IN TRANSIT,
-                        # Otherwise, add the package as-is
-                        for j in range(1, 41):
-                            if str(j) not in delivered_packages:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                package.set_status("")
-                                final_package_status.append(str(package))
-                            else:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                final_package_status.append(str(package))
+                            elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('AT THE HUB')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        packages_filtered_by_weight = list()
-                        for package in final_package_status:
-                            if (package.split(",")[7].strip() == target_weight):
-                                packages_filtered_by_weight.append(package)
                         print("")
                         print(
-                            f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with WEIGHT [{target_weight}]:")
-                        print("\t--------------------------------------------------")
+                            f'\tPackages with a Weight of ({target_weight}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
+                        print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user
-                        if (len(packages_filtered_by_weight) != 0):
-                            for pack in packages_filtered_by_weight:
-                                print(f"\t{pack}")
-                        else:
-                            print("\tNo packages found with that criteria.")
+                        # target_address
+                        filtered_packages = package_handler.get_packages_by_weight(target_weight)
+                        for package in filtered_packages:
+                            if ("DELIVERED" in str(package)):
+                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("EN ROUTE" in str(package)):
+                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("AT THE HUB" in str(package)):
+                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -685,63 +669,47 @@ while (user_input != "q"):
                     # If the user wants to return a package matching a certain status
                     elif (query_type == "s"):
                         print("")
-                        print(
-                            "\tEnter the Target Package STATUS. Example: IN TRANSIT (or DELIVERED)")
+                        print(COLORS.OKCYAN +
+                              "\tEnter the Target Package STATUS. Example:" + COLORS.TERMINATE + COLORS.HEADER + " EN ROUTE, AT THE HUB, or DELIVERED" + COLORS.TERMINATE + COLORS.OKCYAN + " (case sensitive, must be exact)" + COLORS.TERMINATE)
                         print("")
                         target_status = input(">")
                         print("")
 
                         # Set that will hold packages that have been delievered up to the given time
-                        delivered_packages = set()
+                        filtered_packages = dict()
 
-                        # A list that will hold all the packages to be printed to the screen
-                        final_package_status = list()
+                        for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
+                            if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
+                                delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
+                                package_handler.get_package_by_id(str(package_id)).set_status(
+                                    'DELIVERED')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Step through the delivery history, grabbing entries up until the specified time
-                        # and placing them into the delivered_packages set
-                        for i in range(0, int(user_input) + 1):
-                            #print(f"{package_status_over_time[i][0]} - {package_status_over_time[i][1]}")
-                            delivered_packages.add((package_status_over_time[i][1])[
-                                                   0:(package_status_over_time[i][1]).index(",")])
-                            # final_package_status.add((package_status_over_time[i][1])[0:(package_status_over_time[i][1]).index(",")])
+                            elif ((time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") > selected_time) and (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") <= selected_time)):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('EN ROUTE')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        # Get the package IDs of those packages that were not delivered (from above)
-                        # these packages are assumbed to be IN TRANSIT as they have not been delivered.
-                        # Setting the status to an emptry string will default them to IN TRANSIT,
-                        # Otherwise, add the package as-is
-                        for j in range(1, 41):
-                            if str(j) not in delivered_packages:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                package.set_status("")
-                                final_package_status.append(str(package))
-                            else:
-                                package = package_handler.get_package_by_id(
-                                    str(j))
-                                final_package_status.append(str(package))
+                            elif (time.strptime(package_status_over_time["HUB_DEPARTURE"][package_id], "%H:%M:%S") > selected_time):
+                                package_handler.get_package_by_id(
+                                    str(package_id)).set_status('AT THE HUB')
+                                #filtered_packages[int(package_id)] = package_handler.get_package_by_id(str(package_id))
 
-                        packages_filtered_by_status = list()
-                        for package in final_package_status:
-                            if (target_status in package.split(",")[1].strip()):
-                                packages_filtered_by_status.append(package)
                         print("")
                         print(
-                            f"\tAll Package Statuses as of {package_status_over_time[int(user_input)][0]} with STATUS [{target_status}]:")
-                        print("\t--------------------------------------------------")
+                            f'\tPackages with a Status of ({target_status}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
+                        print("\t---------------------------------")
 
                         # Print out all the packages with their statuses to the user
-                        if (len(packages_filtered_by_status) != 0):
-                            for pack in packages_filtered_by_status:
-                                print(f"\t{pack}")
-                        else:
-                            print("\tNo packages found with that criteria.")
+                        # target_address
+                        filtered_packages = package_handler.get_packages_by_status(target_status)
+                        for package in filtered_packages:
+                            if ("DELIVERED" in str(package)):
+                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("EN ROUTE" in str(package)):
+                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                            elif ("AT THE HUB" in str(package)):
+                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
-
-                # elif(user_input == "b"):
-                #    # Setting the user_input to an empty strill will restart the program
-                #    user_input = ""
-                # else:
-                #    print("")
-                #   print("\tInvalid input. What would you like to do next?")

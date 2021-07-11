@@ -1,4 +1,5 @@
 # Nnamdi Joshua Madakor, ID: 000214961
+from COLORS import COLORS
 from queue import Queue
 from datetime import timedelta
 from HashMap import HashMap
@@ -310,24 +311,26 @@ class Truck:
             if (current_time >= ten_twenty_am and not package_9_has_been_updated and self.id == "1_trip2" and not dont_ask_to_update_9):
                 print("")
                 print(
-                    f"\tDuring delivery, new information has come in about package #9!")
+                    COLORS.OKCYAN + f"\tDuring delivery, new information has come in about package #9!" + COLORS.TERMINATE)
                 print(
-                    f"\tWould you like to correct the address for package #9? Enter 'y' or 'n'")
+                    COLORS.OKCYAN + f"\tWould you like to correct the address for package #9? Enter 'y' or 'n'" + COLORS.TERMINATE)
+                print("")
+
                 answer = input(">")
                 # Fix Package #9
                 while (answer != "y" and answer != "n"):
                     print(
-                        f"\tInvalid Response. During the route, new information has come in about package #9!")
-                    print(
-                        f"\tWould you like to correct the address for package #9? Enter 'y' or 'n'")
+                        COLORS.RED + f"\tInvalid Response. " + COLORS.TERMINATE + COLORS.OKCYAN + "During the route, new information has come in about package #9!" + COLORS.TERMINATE)
+                    print(COLORS.OKCYAN +
+                          f"\tWould you like to correct the address for package #9? Enter 'y' or 'n'" + COLORS.TERMINATE)
                     answer = input(">")
 
                 if (answer == "y"):
                     # Update the HashTable with the new Package information
                     package_handler.packages_hash_table.add("9", Package(
                         "9", "Third District Juvenile Court", "410 S State St", "EOD", "Salt Lake City", "84111", "2", "IN TRANSIT"))
-                    print(
-                        f"\tPackage #9's address has been updated to: 410 S State St., Salt Lake City, UT 84111!")
+                    print(COLORS.GREEN +
+                          f"\tPackage #9's address has been updated to: 410 S State St., Salt Lake City, UT 84111!" + COLORS.TERMINATE)
                     print("")
                     # sleep(1)
                     # The truck that is carrying Package #9 will have it's Map re-balanced/re-optimized

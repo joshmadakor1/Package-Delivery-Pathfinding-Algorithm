@@ -232,7 +232,6 @@ def delivery_simulation(package_status_over_time):
         f"\tTotal Distance: {round(float(truck2_return_metrics[2]),2)} miles")
     print(f"")
     sleep(1)
-    print(f"")
     print(COLORS.GREEN +
           f"\tCombined mileage for all trucks:  {round(float(total_miles_driven),2)} miles" + COLORS.TERMINATE)
     print(COLORS.GREEN +
@@ -274,7 +273,8 @@ while (user_input != "q"):
         delivery_simulation(package_status_over_time)
         print("")
         while (user_input != "p" and user_input != "b"):
-            print(COLORS.OKCYAN + "\tWhat would you like to do next?" + COLORS.TERMINATE)
+            print(COLORS.OKCYAN + "\tWhat would you like to do next?" +
+                  COLORS.TERMINATE)
             print("")
             print("\tp - Package Information Lookup")
             print("\tb - Back to Main Menu")
@@ -300,11 +300,13 @@ while (user_input != "q"):
 
                                 break
                         except ValueError:
-                            print(COLORS.RED + "\tInvalid time entered." + COLORS.TERMINATE)
+                            print(COLORS.RED +
+                                  "\tInvalid time entered." + COLORS.TERMINATE)
                             continue
 
                     print("")
-                    print(COLORS.OKCYAN + "\tHow would you like to query packages?" + COLORS.TERMINATE)
+                    print(
+                        COLORS.OKCYAN + "\tHow would you like to query packages?" + COLORS.TERMINATE)
                     print("")
                     print(
                         f'\ta - Show ALL package statuses as of {time.strftime("%H:%M", selected_time)}')
@@ -321,7 +323,8 @@ while (user_input != "q"):
                     while (query_type != "a" and query_type != "i" and query_type != "r" and query_type != "d" and query_type != "c" and query_type != "z" and query_type != "w" and query_type != "s"):
                         print(COLORS.RED + "\tinvalid input" + COLORS.TERMINATE)
                         print("")
-                        print(COLORS.OKCYAN + "\tHow would you like to query packages?" + COLORS.TERMINATE)
+                        print(
+                            COLORS.OKCYAN + "\tHow would you like to query packages?" + COLORS.TERMINATE)
                         print("")
                         print(
                             f"\ta - Show ALL package statuses as of {package_status_over_time[int(user_input)][0]}")
@@ -343,7 +346,8 @@ while (user_input != "q"):
                         for package_id in sorted(package_status_over_time["DELIVERED_TIMES"]):
                             if (time.strptime(package_status_over_time["DELIVERED_TIMES"][package_id], "%H:%M:%S") <= selected_time):
                                 delivered_time = package_status_over_time["DELIVERED_TIMES"][package_id]
-                                package_handler.get_package_by_id(str(package_id)).set_status('DELIVERED (' + delivered_time + ')')
+                                package_handler.get_package_by_id(str(package_id)).set_status(
+                                    'DELIVERED (' + delivered_time + ')')
                                 filtered_packages[int(package_id)] = package_handler.get_package_by_id(
                                     str(package_id))
 
@@ -367,11 +371,14 @@ while (user_input != "q"):
                         # Print out all the packages with their statuses to the user
                         for key in filtered_packages:
                             if ("DELIVERED" in str(filtered_packages[key])):
-                                print(COLORS.GREEN + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
+                                print(
+                                    COLORS.GREEN + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
                             elif ("EN ROUTE" in str(filtered_packages[key])):
-                                print(COLORS.YELLOW + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
+                                print(
+                                    COLORS.YELLOW + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
                             elif ("AT THE HUB" in str(filtered_packages[key])):
-                                print(COLORS.RED + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
+                                print(
+                                    COLORS.RED + "\t"+str(filtered_packages[key]) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -415,11 +422,14 @@ while (user_input != "q"):
                             f'\tPackage with an ID of ({target_id}) as of (' + time.strftime("%H:%M:%S", selected_time) + ')')
                         print("\t---------------------------------")
                         if ("DELIVERED" in str(filtered_packages[int(target_id)])):
-                            print(COLORS.GREEN + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
+                            print(
+                                COLORS.GREEN + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
                         elif ("EN ROUTE" in str(filtered_packages[int(target_id)])):
-                            print(COLORS.YELLOW + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
+                            print(
+                                COLORS.YELLOW + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
                         elif ("AT THE HUB" in str(filtered_packages[int(target_id)])):
-                            print(COLORS.RED + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
+                            print(
+                                COLORS.RED + "\t"+str(filtered_packages[int(target_id)]) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -468,11 +478,14 @@ while (user_input != "q"):
                             target_address)
                         for package in filtered_packages:
                             if ("DELIVERED" in str(package)):
-                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.GREEN + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("EN ROUTE" in str(package)):
-                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.YELLOW + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("AT THE HUB" in str(package)):
-                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.RED + "\t" +
+                                      str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -513,14 +526,18 @@ while (user_input != "q"):
 
                         # Print out all the packages with their statuses to the user
                         # target_address
-                        filtered_packages = package_handler.get_packages_by_deadline(target_deadline)
+                        filtered_packages = package_handler.get_packages_by_deadline(
+                            target_deadline)
                         for package in filtered_packages:
                             if ("DELIVERED" in str(package)):
-                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.GREEN + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("EN ROUTE" in str(package)):
-                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.YELLOW + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("AT THE HUB" in str(package)):
-                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.RED + "\t" +
+                                      str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -561,14 +578,18 @@ while (user_input != "q"):
 
                         # Print out all the packages with their statuses to the user
                         # target_address
-                        filtered_packages = package_handler.get_packages_by_city(target_city)
+                        filtered_packages = package_handler.get_packages_by_city(
+                            target_city)
                         for package in filtered_packages:
                             if ("DELIVERED" in str(package)):
-                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.GREEN + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("EN ROUTE" in str(package)):
-                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.YELLOW + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("AT THE HUB" in str(package)):
-                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.RED + "\t" +
+                                      str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -609,14 +630,18 @@ while (user_input != "q"):
 
                         # Print out all the packages with their statuses to the user
                         # target_address
-                        filtered_packages = package_handler.get_packages_by_zip(target_zip)
+                        filtered_packages = package_handler.get_packages_by_zip(
+                            target_zip)
                         for package in filtered_packages:
                             if ("DELIVERED" in str(package)):
-                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.GREEN + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("EN ROUTE" in str(package)):
-                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.YELLOW + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("AT THE HUB" in str(package)):
-                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.RED + "\t" +
+                                      str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -657,14 +682,18 @@ while (user_input != "q"):
 
                         # Print out all the packages with their statuses to the user
                         # target_address
-                        filtered_packages = package_handler.get_packages_by_weight(target_weight)
+                        filtered_packages = package_handler.get_packages_by_weight(
+                            target_weight)
                         for package in filtered_packages:
                             if ("DELIVERED" in str(package)):
-                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.GREEN + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("EN ROUTE" in str(package)):
-                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.YELLOW + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("AT THE HUB" in str(package)):
-                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.RED + "\t" +
+                                      str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"
@@ -705,14 +734,18 @@ while (user_input != "q"):
 
                         # Print out all the packages with their statuses to the user
                         # target_address
-                        filtered_packages = package_handler.get_packages_by_status(target_status)
+                        filtered_packages = package_handler.get_packages_by_status(
+                            target_status)
                         for package in filtered_packages:
                             if ("DELIVERED" in str(package)):
-                                print(COLORS.GREEN + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.GREEN + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("EN ROUTE" in str(package)):
-                                print(COLORS.YELLOW + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.YELLOW + "\t" +
+                                      str(package) + COLORS.TERMINATE)
                             elif ("AT THE HUB" in str(package)):
-                                print(COLORS.RED + "\t"+str(package) + COLORS.TERMINATE)
+                                print(COLORS.RED + "\t" +
+                                      str(package) + COLORS.TERMINATE)
 
                         # Reset input to "b" to go back to the main menu
                         user_input = "b"

@@ -3,6 +3,34 @@ import csv
 from Package import Package
 from HashMap import HashMap
 
+'''
+************************************************************************************************
+                        PackageHandler Class Pseudocode with BIG-O Analysis
+                                TOTAL CLASS COMPLEXITY: O(N^2)
+************************************************************************************************
+        
+
+
+        __init__ is used to initialize the class properties
+************************************************************************************************       
+        __init__
+        METHOD TIME COMPLEXITY: O(3) -> O(2+N) -> O(N)
+        METHOD SPACE COMPLEXITY: O(N)
+            INITIALIZE TOTAL_PACKAGES:  O(1) - self.location_names = [None] * 27 
+            INITIALIZE packages:        O(1) - self.raw_distance_data = [] 
+            INITIALIZE build_packages_table_from_csv():   O(N)
+
+
+        build_packages_table_from_csv loades the distances and package information from CSV Files
+************************************************************************************************* 
+        initialize_location_name_data
+        METHOD COMPLEXITY: O(3N) -> O(N)
+            READ DIST. NAMES CSV:      O(N) - names_reader = csv.reader(file)
+            READ PACKGE INFO FROM CSV: O(N) - raw_distance_names = list(names_reader)
+            STORE DIST./PACKAGE INFO IN HashTable
+
+'''
+
 
 class PackageHandler:
 

@@ -47,7 +47,6 @@ def initialize_truck1():
     truck1.add_package(package_handler.get_package_by_id('19'))
     truck1.add_package(package_handler.get_package_by_id('20'))
     truck1.add_package(package_handler.get_package_by_id('37'))
-    truck1.add_package(package_handler.get_package_by_id('25'))
 
     # Calculate optimal routes for the three loaded up trucks
     # g.node_list contains informations on the edges/nodes that will
@@ -94,6 +93,7 @@ def initialize_truck2():
     truck2.delivery_nodes.clear()
     truck2.add_package(package_handler.get_package_by_id('17'))
     truck2.add_package(package_handler.get_package_by_id('12'))
+    truck2.add_package(package_handler.get_package_by_id('25'))
     truck2.add_package(package_handler.get_package_by_id('28'))
     truck2.add_package(package_handler.get_package_by_id('32'))
     truck2.add_package(package_handler.get_package_by_id('3'))

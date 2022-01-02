@@ -2,6 +2,12 @@
 
 ## WGUPS Routing Program
 
+<p align="center">
+<img src="https://i.imgur.com/VRWMQxw.png" height="80%" width="80%" alt="Frankie Grande, Ariana Grande et al. are posing for a picture"/>
+</p>
+
+### [YouTube Explanation with Demonstration](https://youtu.be/lHeVDmgpKy4)
+
 This is a project specified by WGU to solve a package delivery routing problem, which is essentially the traveling salesman problem with a dedicated starting node and a few restrictions/requirements. For my solution, I implemented the nearest neighbor algorithm which operates with a time-complexity of O(n).
 
 ## Usage
